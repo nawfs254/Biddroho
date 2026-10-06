@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDatabase } from '@/lib/mongodb';
 import { requirePermission } from '@/lib/permissions/rbac';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     await requirePermission('audit.view');

@@ -3,6 +3,8 @@ import { getDatabase } from '@/lib/mongodb';
 import { requirePermission } from '@/lib/permissions/rbac';
 import { recordAuditLog } from '@/lib/audit/logger';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     await requirePermission('settings.view');

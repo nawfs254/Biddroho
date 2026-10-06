@@ -5,6 +5,8 @@ import { hashPassword } from '@/lib/auth/password';
 import { recordAuditLog } from '@/lib/audit/logger';
 import { userCreateSchema } from '@/lib/validation/schemas';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     await requirePermission('users.view');

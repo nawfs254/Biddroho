@@ -4,6 +4,8 @@ import { requirePermission } from '@/lib/permissions/rbac';
 import { recordAuditLog } from '@/lib/audit/logger';
 import { PERMISSIONS_LIST } from '@/lib/permissions/definitions';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     await requirePermission('roles.view');

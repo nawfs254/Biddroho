@@ -5,6 +5,8 @@ import { requirePermission, hasPermission } from '@/lib/permissions/rbac';
 import { recordAuditLog } from '@/lib/audit/logger';
 import { eventSchema } from '@/lib/validation/schemas';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     await requirePermission('events.view');
