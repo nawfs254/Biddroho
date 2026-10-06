@@ -58,20 +58,28 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({
+import AppShell from '@/components/AppShell';
+import UnavailablePage from '@/components/UnavailablePage';
+import { isDatabaseConnected } from '@/lib/mongodb';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const isConnected = await isDatabaseConnected();
+
   return (
     <html lang="en">
       <body style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Navbar />
-        <main style={{ flex: '1 0 auto', paddingTop: '80px', paddingBottom: '70px' }}>
-          {children}
-        </main>
-        <AudioPlayerBar />
-        <Footer />
+        {isConnected ? (
+          <AppShell>{children}</AppShell>
+        ) : (
+          <UnavailablePage />
+        )}
       </body>
     </html>
   );

@@ -348,3 +348,103 @@ select.input-editorial option {
   filter: blur(60px);
   z-index: 0;
 }
+
+/* ============================================================
+   PRINT OPTIMIZATION: Clean Statements & Audited Financial Reports
+   ============================================================ */
+@media print {
+  /* Completely hide overlays, navigation, sidebars, headers, and interactive screen tools */
+  body::before,
+  aside,
+  header,
+  nav,
+  .no-print,
+  .screen-only-toolbar {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Completely reset root layout containers to block and visible to prevent blank prints */
+  html,
+  body {
+    color-scheme: light !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  html,
+  body,
+  main,
+  .admin-root-layout,
+  .admin-main-container,
+  .reports-page-wrapper,
+  .transaction-report-paper {
+    display: block !important;
+    position: static !important;
+    float: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    box-shadow: none !important;
+    border: none !important;
+    font-size: 10pt !important;
+    line-height: 1.4 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 15mm 18mm;
+  }
+
+  a {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+
+  a::after {
+    content: none !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Strip all borders, rules, and dividing lines */
+  .transaction-report-paper,
+  .transaction-report-paper *,
+  table, tr, th, td, div {
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tfoot {
+    display: table-footer-group !important;
+  }
+
+  tr, .print-avoid-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+

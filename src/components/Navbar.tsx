@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { name: 'MEDIA', href: '/media' },
   { name: 'BAND', href: '/band' },
   { name: 'NEWS', href: '/news' },
+  { name: 'CONTACT', href: '/contact' },
 ];
 
 export default function Navbar() {

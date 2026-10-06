@@ -16,7 +16,10 @@ export default function EventCard({ event }: EventCardProps) {
 
   const isSoldOut = event.ticketStatus === 'sold_out';
   const isSellingFast = event.ticketStatus === 'selling_fast';
-  const isPast = event.status === 'past';
+  const isNotLiveYet = event.ticketStatus === 'not_live_yet' || event.ticketStatus === 'not_live';
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const isPast = event.status === 'past' || (event.status !== 'upcoming' && Boolean(event.date) && new Date(event.date) < today);
 
   return (
     <div
@@ -144,8 +147,8 @@ export default function EventCard({ event }: EventCardProps) {
         }}
         className="event-cta-group"
       >
-        {/* Ticket Availability Tag */}
-        <div>
+        {/* Ticket Availability Tag & Price */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           {isSoldOut ? (
             <span
               style={{
@@ -176,6 +179,22 @@ export default function EventCard({ event }: EventCardProps) {
               }}
             >
               SELLING FAST
+            </span>
+          ) : isNotLiveYet ? (
+            <span
+              style={{
+                display: 'inline-block',
+                padding: '0.35rem 0.85rem',
+                background: 'rgba(245, 158, 11, 0.1)',
+                color: '#fbbf24',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+                fontSize: '0.75rem',
+                letterSpacing: '0.12em',
+                fontFamily: 'var(--font-display)',
+                fontWeight: 600
+              }}
+            >
+              NOT LIVE YET
             </span>
           ) : isPast ? (
             <span
@@ -208,11 +227,28 @@ export default function EventCard({ event }: EventCardProps) {
               TICKETS AVAILABLE
             </span>
           )}
+
+          {event.ticketPrice && (
+            <span
+              style={{
+                display: 'inline-block',
+                padding: '0.35rem 0.75rem',
+                background: '#121216',
+                color: '#e4e4e7',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                letterSpacing: '0.04em'
+              }}
+            >
+              {event.ticketPrice}
+            </span>
+          )}
         </div>
 
         {/* Buttons */}
         <div style={{ display: 'flex', gap: '0.75rem', width: '100%' }}>
-          {!isPast && !isSoldOut && event.ticketUrl ? (
+          {!isPast && !isSoldOut && !isNotLiveYet && event.ticketUrl ? (
             <a
               href={event.ticketUrl}
               target="_blank"
@@ -230,7 +266,7 @@ export default function EventCard({ event }: EventCardProps) {
 
           <Link
             href={`/events/${event.slug}`}
-            className="btn-secondary"
+            className={(!isPast && !isSoldOut && !isNotLiveYet && event.ticketUrl) ? "btn-secondary" : "btn-primary"}
             style={{
               padding: '0.65rem 1.4rem',
               fontSize: '0.95rem',

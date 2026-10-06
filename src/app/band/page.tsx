@@ -3,14 +3,18 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Quote, Sparkles, Disc, Flame, ArrowRight, ShieldCheck } from 'lucide-react';
-import { BAND_MEMBERS } from '@/data/mockData';
+import { getMembers } from '@/lib/dataService';
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'Band & Lineup',
-  description: 'The story, members, and philosophy of BIDDROHO. Meet Srijon, Mahir, Alvi, Aurko, Arnob, and Ridoy — the heavy rock brotherhood founded in 2011.'
+  title: 'Band & Official Lineup',
+  description: 'The story, official members, and philosophy of BIDDROHO. Meet Srijon Tawsif Hossain, Sayed Alvi Haque, Mahir Sakib, Nawfs Ul Ahsun Arnob, Zhasid Hasan Aurko, Yasin Ridoy, and Tanim Reza.'
 };
 
-export default function BandPage() {
+export default async function BandPage() {
+  const members = await getMembers();
+
   return (
     <div style={{ backgroundColor: '#050506', minHeight: '100vh', paddingBottom: '6rem' }}>
       {/* Editorial Header */}
@@ -24,7 +28,7 @@ export default function BandPage() {
       >
         <div className="ambient-glow-spot" style={{ top: '-100px', left: '-50px' }} />
         <div className="site-container" style={{ position: 'relative', zIndex: 1 }}>
-          <span className="editorial-badge">// THE LINEUP & BROTHERHOOD</span>
+          <span className="editorial-badge">// THE OFFICIAL LINEUP (MONGODB)</span>
           <h1 className="section-title">THE ARCHITECTS OF REBELLION</h1>
           <p className="section-description">
             Founded in Dhaka in 2011, BIDDROHO emerged with a solitary creed: to forge uncompromising heavy rock that balances technical mastery with raw street defiance.
@@ -55,7 +59,7 @@ export default function BandPage() {
               </p>
 
               <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.8, marginBottom: '2rem' }}>
-                Over the past decade and a half, the lineup solidified into its current six-piece power formation. Integrating multi-layered keyboards, dual guitar polyphony, and an earth-quaking rhythm section, BIDDROHO has grown from underground club favorites to packing stadiums with roaring choruses.
+                Over the past decade and a half, the lineup solidified into its current power formation. Integrating multi-layered keyboards, dual guitar polyphony, and an earth-quaking rhythm section, BIDDROHO has grown from underground club favorites to packing stadiums with roaring choruses.
               </p>
 
               {/* Milestones stats */}
@@ -82,9 +86,9 @@ export default function BandPage() {
                 </div>
                 <div>
                   <span className="font-display" style={{ fontSize: '2.8rem', color: 'var(--crimson-base)', lineHeight: 1 }}>
-                    06
+                    07
                   </span>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Musicians United</p>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Creative Minds</p>
                 </div>
               </div>
             </div>
@@ -124,12 +128,12 @@ export default function BandPage() {
         </div>
       </section>
 
-      {/* 2. BAND MEMBERS IN-DEPTH PROFILES */}
+      {/* 2. BAND MEMBERS IN-DEPTH PROFILES (REAL NAMES) */}
       <section className="section-py">
         <div className="site-container">
           <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 4rem' }}>
             <span className="editorial-badge" style={{ justifyContent: 'center' }}>
-              // THE ROSTER
+              // THE ROSTER (MONGODB)
             </span>
             <h2 className="section-title">THE BAND MEMBERS</h2>
             <p className="section-description" style={{ margin: '0 auto' }}>
@@ -138,8 +142,9 @@ export default function BandPage() {
           </div>
 
           {/* Members Detailed Cards */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
-            {BAND_MEMBERS.map((member, index) => {
+          {members.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
+              {members.map((member, index) => {
               const isEven = index % 2 === 0;
               return (
                 <div
@@ -205,7 +210,7 @@ export default function BandPage() {
                       // {member.instrument.toUpperCase()}
                     </div>
 
-                    <h3 className="font-display" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: '#fff', lineHeight: 1, marginBottom: '0.5rem' }}>
+                    <h3 className="font-display" style={{ fontSize: 'clamp(2.3rem, 4.5vw, 3.8rem)', color: '#fff', lineHeight: 1, marginBottom: '0.5rem' }}>
                       {member.name}
                     </h3>
 
@@ -218,46 +223,64 @@ export default function BandPage() {
                     </p>
 
                     {/* Member Quote */}
-                    <div
-                      style={{
-                        backgroundColor: 'rgba(229, 9, 20, 0.05)',
-                        borderLeft: '3px solid var(--crimson-base)',
-                        padding: '1rem 1.25rem',
-                        marginBottom: '2rem'
-                      }}
-                    >
-                      <p style={{ color: '#fff', fontStyle: 'italic', fontSize: '0.95rem' }}>
-                        &ldquo;{member.quote}&rdquo;
-                      </p>
-                    </div>
+                    {member.quote && (
+                      <div
+                        style={{
+                          backgroundColor: 'rgba(229, 9, 20, 0.05)',
+                          borderLeft: '3px solid var(--crimson-base)',
+                          padding: '1rem 1.25rem',
+                          marginBottom: '2rem'
+                        }}
+                      >
+                        <p style={{ color: '#fff', fontStyle: 'italic', fontSize: '0.95rem' }}>
+                          &ldquo;{member.quote}&rdquo;
+                        </p>
+                      </div>
+                    )}
 
                     {/* Gear / Weapons */}
-                    <div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', letterSpacing: '0.15em', fontFamily: 'var(--font-display)', marginBottom: '0.75rem' }}>
-                        LIVE GEAR & INSTRUMENT RIG
+                    {member.gear && member.gear.length > 0 && (
+                      <div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', letterSpacing: '0.15em', fontFamily: 'var(--font-display)', marginBottom: '0.75rem' }}>
+                          RIG & EQUIPMENT SPECIFICATIONS
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                          {member.gear.map((gearItem, gIdx) => (
+                            <span
+                              key={gIdx}
+                              style={{
+                                backgroundColor: '#0a0a0e',
+                                border: '1px solid var(--border-subtle)',
+                                color: 'var(--text-secondary)',
+                                padding: '0.35rem 0.75rem',
+                                fontSize: '0.8rem'
+                              }}
+                            >
+                              {gearItem}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        {member.gear.map((gearItem, gIdx) => (
-                          <span
-                            key={gIdx}
-                            style={{
-                              backgroundColor: '#0a0a0e',
-                              border: '1px solid var(--border-subtle)',
-                              color: 'var(--text-secondary)',
-                              padding: '0.35rem 0.75rem',
-                              fontSize: '0.8rem'
-                            }}
-                          >
-                            {gearItem}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               );
             })}
-          </div>
+            </div>
+          ) : (
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '4rem 1.5rem',
+                border: '1px dashed var(--border-subtle)',
+                backgroundColor: 'rgba(255, 255, 255, 0.01)',
+              }}
+            >
+              <p style={{ color: 'var(--text-muted)', fontSize: '1rem', margin: 0 }}>
+                No data available
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -268,7 +291,7 @@ export default function BandPage() {
             BRING THE ENTIRE LINEUP TO YOUR VENUE
           </h2>
           <p className="section-description" style={{ margin: '0 auto 2rem' }}>
-            Book Srijon, Mahir, Alvi, Aurko, Arnob, and Ridoy for stadium tours, headline concerts, and festival appearances.
+            Book Srijon Tawsif Hossain, Sayed Alvi Haque, Mahir Sakib, Nawfs Ul Ahsun Arnob, Zhasid Hasan Aurko, Yasin Ridoy, and Tanim Reza for stadium tours and festival appearances.
           </p>
           <Link href="/book" className="btn-primary" style={{ fontSize: '1.2rem', padding: '1rem 2.5rem' }}>
             SUBMIT CONCERT BOOKING <ArrowRight size={18} />

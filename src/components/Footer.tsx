@@ -8,6 +8,20 @@ import { ArrowUpRight, Check, Disc3, Radio, Send } from 'lucide-react';
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [connectLinks, setConnectLinks] = useState<Array<{ label: string; url?: string }>>([]);
+
+  React.useEffect(() => {
+    fetch('/api/settings')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.settings && Array.isArray(data.settings.connectLinks)) {
+          setConnectLinks(data.settings.connectLinks);
+        } else {
+          setConnectLinks([]);
+        }
+      })
+      .catch((err) => console.warn('Could not load dynamic connect links:', err));
+  }, []);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,6 +124,7 @@ export default function Footer() {
                 { name: 'BAND STORY & MEMBERS', href: '/band' },
                 { name: 'OFFICIAL NEWS & UPDATES', href: '/news' },
                 { name: 'BOOK BIDDROHO', href: '/book' },
+                { name: 'CONTACT US', href: '/contact' },
               ].map((item) => (
                 <li key={item.name}>
                   <Link
@@ -152,45 +167,75 @@ export default function Footer() {
             >
               STREAM & CONNECT
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {[
-                { label: 'Spotify', link: 'https://open.spotify.com' },
-                { label: 'Apple Music', link: 'https://music.apple.com' },
-                { label: 'YouTube Official', link: 'https://youtube.com' },
-                { label: 'YouTube Music', link: 'https://music.youtube.com' },
-                { label: 'Facebook Official', link: 'https://facebook.com' },
-                { label: 'Instagram', link: 'https://instagram.com' }
-              ].map((platform) => (
-                <a
-                  key={platform.label}
-                  href={platform.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    color: 'var(--text-secondary)',
-                    fontSize: '0.9rem',
-                    padding: '0.5rem 0.75rem',
-                    background: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid var(--border-subtle)',
-                    textDecoration: 'none'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-red)';
-                    e.currentTarget.style.color = '#fff';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-subtle)';
-                    e.currentTarget.style.color = 'var(--text-secondary)';
-                  }}
-                >
-                  <span>{platform.label}</span>
-                  <ArrowUpRight size={14} style={{ color: 'var(--crimson-base)' }} />
-                </a>
-              ))}
+            {connectLinks.length === 0 ? (
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>(No data available)</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {connectLinks.map((platform, idx) => {
+                const isConfigured = Boolean(platform.url && platform.url.trim() !== '');
+
+                if (isConfigured) {
+                  return (
+                    <a
+                      key={platform.label + idx}
+                      href={platform.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        color: 'var(--text-secondary)',
+                        fontSize: '0.9rem',
+                        padding: '0.5rem 0.75rem',
+                        background: 'rgba(255, 255, 255, 0.02)',
+                        border: '1px solid var(--border-subtle)',
+                        textDecoration: 'none',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--border-red)';
+                        e.currentTarget.style.color = '#fff';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--border-subtle)';
+                        e.currentTarget.style.color = 'var(--text-secondary)';
+                      }}
+                    >
+                      <span>{platform.label}</span>
+                      <ArrowUpRight size={14} style={{ color: 'var(--crimson-base)' }} />
+                    </a>
+                  );
+                }
+
+                return (
+                  <button
+                    key={platform.label + idx}
+                    type="button"
+                    disabled
+                    title={`${platform.label} link not available yet`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      color: '#71717a',
+                      fontSize: '0.9rem',
+                      padding: '0.5rem 0.75rem',
+                      background: 'rgba(255, 255, 255, 0.01)',
+                      border: '1px solid rgba(255, 255, 255, 0.06)',
+                      opacity: 0.38,
+                      cursor: 'not-allowed',
+                      width: '100%',
+                      textAlign: 'left',
+                    }}
+                  >
+                    <span>{platform.label}</span>
+                    <ArrowUpRight size={14} style={{ color: '#52525b', opacity: 0.5 }} />
+                  </button>
+                );
+              })}
             </div>
+            )}
           </div>
 
           {/* Col 4: Newsletter / Tour Alerts */}

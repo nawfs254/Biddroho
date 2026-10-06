@@ -4,21 +4,26 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Calendar, Clock, MapPin, Ticket, ArrowLeft, Users, ShieldAlert, Disc3, ExternalLink, Image as ImageIcon } from 'lucide-react';
-import { EVENTS_DATA } from '@/data/mockData';
+import { getEventBySlug, getEvents } from '@/lib/dataService';
+import { EventItem } from '@/data/mockData';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return EVENTS_DATA.map((event) => ({
+  const events = await getEvents();
+  return events.map((event) => ({
     slug: event.slug,
   }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const event = EVENTS_DATA.find((e) => e.slug === slug);
+  const event = await getEventBySlug(slug);
   if (!event) return { title: 'Event Not Found' };
 
   return {
@@ -34,14 +39,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function SingleEventPage({ params }: PageProps) {
   const { slug } = await params;
-  const event = EVENTS_DATA.find((e) => e.slug === slug);
+  const event = await getEventBySlug(slug);
 
   if (!event) {
     notFound();
   }
 
-  const isPast = event.status === 'past';
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const isPast = event.status === 'past' || (event.status !== 'upcoming' && Boolean(event.date) && new Date(event.date) < today);
   const isSoldOut = event.ticketStatus === 'sold_out';
+  const isNotLiveYet = event.ticketStatus === 'not_live_yet' || event.ticketStatus === 'not_live';
 
   return (
     <div style={{ backgroundColor: '#050506', minHeight: '100vh', paddingBottom: '6rem' }}>
@@ -118,7 +126,7 @@ export default async function SingleEventPage({ params }: PageProps) {
                     {event.ticketPrice || 'BDT 800 - BDT 2,500'}
                   </div>
 
-                  {!isSoldOut && event.ticketUrl ? (
+                  {!isSoldOut && !isNotLiveYet && event.ticketUrl ? (
                     <a
                       href={event.ticketUrl}
                       target="_blank"
@@ -128,9 +136,26 @@ export default async function SingleEventPage({ params }: PageProps) {
                     >
                       <Ticket size={18} /> PURCHASE OFFICIAL PASSES
                     </a>
-                  ) : (
+                  ) : isNotLiveYet ? (
+                    <div style={{
+                      color: '#fbbf24',
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '1.15rem',
+                      letterSpacing: '0.08em',
+                      padding: '0.75rem',
+                      backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                      border: '1px solid rgba(245, 158, 11, 0.25)',
+                      borderRadius: '4px'
+                    }}>
+                      TICKETING NOT LIVE YET
+                    </div>
+                  ) : isSoldOut ? (
                     <div style={{ color: 'var(--crimson-base)', fontFamily: 'var(--font-display)', fontSize: '1.25rem' }}>
                       ALL TICKETS SOLD OUT
+                    </div>
+                  ) : (
+                    <div style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-display)', fontSize: '1.1rem' }}>
+                      TICKETING DETAILS ANNOUNCED SOON
                     </div>
                   )}
                 </div>
@@ -150,7 +175,7 @@ export default async function SingleEventPage({ params }: PageProps) {
                     letterSpacing: '0.15em'
                   }}
                 >
-                  {isPast ? 'CONCLUDED EVENT' : 'OFFICIAL LIVE SHOW'}
+                  {isPast ? 'CONCLUDED EVENT' : 'OFFICIAL LIVE SHOW (MONGODB)'}
                 </span>
                 {event.tourName && (
                   <span style={{ color: 'var(--crimson-base)', fontSize: '0.85rem', fontWeight: 600 }}>
@@ -191,9 +216,11 @@ export default async function SingleEventPage({ params }: PageProps) {
                   <div style={{ color: '#fff', fontWeight: 600, fontSize: '1rem' }}>
                     {event.time}
                   </div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                    Doors Open: {event.doorsOpen}
-                  </div>
+                  {event.doorsOpen && (
+                    <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
+                      {event.doorsOpen.toLowerCase().startsWith('doors open') ? event.doorsOpen : `Doors Open: ${event.doorsOpen}`}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -213,7 +240,7 @@ export default async function SingleEventPage({ params }: PageProps) {
                     <ShieldAlert size={14} /> Policy
                   </div>
                   <div style={{ color: '#fff', fontWeight: 600, fontSize: '1rem' }}>
-                    {event.ageRestriction}
+                    {event.ageRestriction || '16+ / All Ages'}
                   </div>
                 </div>
               </div>
@@ -247,7 +274,7 @@ export default async function SingleEventPage({ params }: PageProps) {
                 </div>
               )}
 
-              {/* Past Event Setlist if available */}
+              {/* Past Event Setlist */}
               {event.setlist && (
                 <div
                   className="dark-card"
@@ -277,7 +304,7 @@ export default async function SingleEventPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* Event Gallery (Past or Related Concert Photography) */}
+      {/* Gallery Captures */}
       {event.galleryImages && event.galleryImages.length > 0 && (
         <section style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '4rem' }}>
           <div className="site-container">

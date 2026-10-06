@@ -4,21 +4,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Calendar, Clock, ArrowLeft, Tag, Share2, ArrowRight } from 'lucide-react';
-import { NEWS_POSTS } from '@/data/mockData';
+import { getNewsBySlug, getNews } from '@/lib/dataService';
+import { NewsPost } from '@/data/mockData';
+
+export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return NEWS_POSTS.map((post) => ({
+  const news = await getNews();
+  return news.map((post) => ({
     slug: post.slug,
   }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = NEWS_POSTS.find((p) => p.slug === slug);
+  const post = await getNewsBySlug(slug);
   if (!post) return { title: 'Article Not Found' };
 
   return {
@@ -34,13 +38,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function SingleNewsPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = NEWS_POSTS.find((p) => p.slug === slug);
+  const post = await getNewsBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
-  const relatedPosts = NEWS_POSTS.filter((p) => p.slug !== slug).slice(0, 2);
+  const allNews = await getNews();
+  const relatedPosts = allNews.filter((p) => p.slug !== slug).slice(0, 2);
 
   return (
     <div style={{ backgroundColor: '#050506', minHeight: '100vh', paddingBottom: '6rem' }}>
@@ -145,64 +150,68 @@ export default async function SingleNewsPage({ params }: PageProps) {
           </div>
 
           {/* Tags */}
-          <div style={{ borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', padding: '1.5rem 0', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <Tag size={15} /> TAGS:
-            </span>
-            {post.tags.map((tag) => (
-              <span
-                key={tag}
-                style={{
-                  backgroundColor: '#121216',
-                  border: '1px solid var(--border-subtle)',
-                  padding: '0.25rem 0.75rem',
-                  fontSize: '0.8rem',
-                  color: 'var(--text-primary)'
-                }}
-              >
-                #{tag}
+          {post.tags && (
+            <div style={{ borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', padding: '1.5rem 0', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Tag size={15} /> TAGS:
               </span>
-            ))}
-          </div>
+              {post.tags.map((tag) => (
+                <span
+                  key={tag}
+                  style={{
+                    backgroundColor: '#121216',
+                    border: '1px solid var(--border-subtle)',
+                    padding: '0.25rem 0.75rem',
+                    fontSize: '0.8rem',
+                    color: 'var(--text-primary)'
+                  }}
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </article>
 
       {/* Related Posts */}
-      <section style={{ borderTop: '1px solid var(--border-subtle)', marginTop: '5rem', paddingTop: '4rem' }}>
-        <div className="site-container" style={{ maxWidth: '880px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-            <h3 className="font-display" style={{ fontSize: '2rem', color: '#fff' }}>
-              RELATED ARTICLES
-            </h3>
-            <Link href="/news" className="btn-outline-red">
-              ALL NEWS
-            </Link>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-            {relatedPosts.map((rel) => (
-              <Link
-                key={rel._id}
-                href={`/news/${rel.slug}`}
-                className="dark-card-interactive"
-                style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column' }}
-              >
-                <div style={{ position: 'relative', aspectRatio: '16/9', width: '100%' }}>
-                  <Image src={rel.coverImage} alt={rel.title} fill style={{ objectFit: 'cover' }} />
-                </div>
-                <div style={{ padding: '1.25rem' }}>
-                  <span style={{ color: 'var(--crimson-base)', fontSize: '0.75rem', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}>
-                    {rel.category.toUpperCase()} • {rel.date}
-                  </span>
-                  <h4 className="font-display" style={{ fontSize: '1.4rem', color: '#fff', marginTop: '4px' }}>
-                    {rel.title}
-                  </h4>
-                </div>
+      {relatedPosts.length > 0 && (
+        <section style={{ borderTop: '1px solid var(--border-subtle)', marginTop: '5rem', paddingTop: '4rem' }}>
+          <div className="site-container" style={{ maxWidth: '880px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+              <h3 className="font-display" style={{ fontSize: '2rem', color: '#fff' }}>
+                RELATED ARTICLES
+              </h3>
+              <Link href="/news" className="btn-outline-red">
+                ALL NEWS
               </Link>
-            ))}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+              {relatedPosts.map((rel) => (
+                <Link
+                  key={rel._id}
+                  href={`/news/${rel.slug}`}
+                  className="dark-card-interactive"
+                  style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column' }}
+                >
+                  <div style={{ position: 'relative', aspectRatio: '16/9', width: '100%' }}>
+                    <Image src={rel.coverImage} alt={rel.title} fill style={{ objectFit: 'cover' }} />
+                  </div>
+                  <div style={{ padding: '1.25rem' }}>
+                    <span style={{ color: 'var(--crimson-base)', fontSize: '0.75rem', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}>
+                      {rel.category.toUpperCase()} • {rel.date}
+                    </span>
+                    <h4 className="font-display" style={{ fontSize: '1.4rem', color: '#fff', marginTop: '4px' }}>
+                      {rel.title}
+                    </h4>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

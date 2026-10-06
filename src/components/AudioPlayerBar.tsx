@@ -4,18 +4,39 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Play, Pause, SkipForward, SkipBack, Volume2, VolumeX, Disc, ExternalLink, ChevronUp, ChevronDown } from 'lucide-react';
-import { RELEASES_DATA } from '@/data/mockData';
+import type { Release } from '@/data/mockData';
 
 export default function AudioPlayerBar() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [progress, setProgress] = useState(25);
+  const [releases, setReleases] = useState<Release[]>([]);
 
-  const currentRelease = RELEASES_DATA[0]; // BIDDROHI
-  const tracks = currentRelease.tracks;
-  const currentTrack = tracks[currentTrackIndex];
+  useEffect(() => {
+    fetch('/api/releases')
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data.releases)) {
+          setReleases(data.releases);
+        }
+      })
+      .catch((err) => console.warn('Could not load releases for player:', err));
+  }, []);
+
+  const currentRelease = releases[0];
+  const tracks = currentRelease?.tracks || [];
+  const currentTrack = tracks[currentTrackIndex] || {
+    number: 1,
+    title: currentRelease?.title || 'Audio Track',
+    duration: '04:15',
+  };
+
+  // If no release in database, do not render audio player
+  if (!currentRelease) {
+    return null;
+  }
 
   // Simulated playback timer for ambient visualizer
   useEffect(() => {
@@ -33,11 +54,13 @@ export default function AudioPlayerBar() {
   };
 
   const nextTrack = () => {
+    if (tracks.length === 0) return;
     setCurrentTrackIndex((prev) => (prev + 1) % tracks.length);
     setProgress(0);
   };
 
   const prevTrack = () => {
+    if (tracks.length === 0) return;
     setCurrentTrackIndex((prev) => (prev - 1 + tracks.length) % tracks.length);
     setProgress(0);
   };
@@ -83,7 +106,7 @@ export default function AudioPlayerBar() {
         >
           {isCollapsed ? (
             <>
-              <ChevronUp size={14} color="var(--crimson-base)" /> NOW PLAYING: {currentTrack.title}
+              <ChevronUp size={14} color="var(--crimson-base)" /> MUSIC STREAMING PLAYER • COMING SOON
             </>
           ) : (
             <>
@@ -96,19 +119,31 @@ export default function AudioPlayerBar() {
       {/* Main Bar */}
       <div
         style={{
+          position: 'relative',
+          overflow: 'hidden',
           backgroundColor: 'rgba(9, 9, 11, 0.96)',
           backdropFilter: 'blur(20px)',
-          borderTop: '1px solid rgba(229, 9, 20, 0.3)',
+          borderTop: '1px solid rgba(229, 9, 20, 0.4)',
           padding: '0.75rem 1.5rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '1.5rem',
           boxShadow: '0 -10px 30px rgba(0, 0, 0, 0.8)'
         }}
       >
-        {/* Track Info & Artwork */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: '220px' }}>
+        {/* Blurry Player Background Controls */}
+        <div
+          style={{
+            filter: 'blur(6px)',
+            opacity: 0.35,
+            pointerEvents: 'none',
+            userSelect: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1.5rem',
+            width: '100%'
+          }}
+        >
+          {/* Track Info & Artwork */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: '220px' }}>
           <div
             style={{
               position: 'relative',
@@ -281,6 +316,116 @@ export default function AudioPlayerBar() {
               <ExternalLink size={12} />
             </a>
           )}
+        </div>
+      </div>
+
+      {/* Coming Soon Glassmorphism Overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'rgba(9, 9, 11, 0.72)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0.65rem clamp(1rem, 3vw, 2rem)',
+            zIndex: 10,
+            gap: '1.25rem',
+            flexWrap: 'wrap'
+          }}
+        >
+          {/* Status and Title */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div
+              style={{
+                width: '9px',
+                height: '9px',
+                borderRadius: '50%',
+                backgroundColor: '#e11d48',
+                boxShadow: '0 0 10px #e11d48, 0 0 18px #e11d48',
+                flexShrink: 0
+              }}
+            />
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-display, Cinzel, serif)',
+                    fontSize: '0.88rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.12em',
+                    color: '#ffffff',
+                    textTransform: 'uppercase'
+                  }}
+                >
+                  OFFICIAL MUSIC PLAYER
+                </span>
+                <span
+                  style={{
+                    fontSize: '0.62rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.14em',
+                    color: '#e11d48',
+                    backgroundColor: 'rgba(225, 29, 72, 0.12)',
+                    border: '1px solid rgba(225, 29, 72, 0.35)',
+                    padding: '2px 8px',
+                    borderRadius: '2px',
+                    textTransform: 'uppercase'
+                  }}
+                >
+                  WE WILL BRING SOON
+                </span>
+              </div>
+              <p style={{ margin: '3px 0 0 0', fontSize: '0.74rem', color: '#a1a1aa' }}>
+                High-fidelity audio streaming is currently in production. Listen to BIDDROHO on official platforms:
+              </p>
+            </div>
+          </div>
+
+          {/* Action Links */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Link
+              href="/music"
+              style={{
+                padding: '6px 12px',
+                backgroundColor: '#18181b',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                color: '#f4f4f5',
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                borderRadius: '2px'
+              }}
+            >
+              Browse Music
+            </Link>
+            <a
+              href="https://open.spotify.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                padding: '6px 12px',
+                backgroundColor: '#e11d48',
+                border: 'none',
+                color: '#ffffff',
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                borderRadius: '2px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px'
+              }}
+            >
+              <span>Spotify</span>
+              <ExternalLink size={11} />
+            </a>
+          </div>
         </div>
       </div>
 

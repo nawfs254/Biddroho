@@ -21,12 +21,13 @@ export interface Release {
     mixedMasteredBy: string;
     recordedAt: string;
     artworkBy: string;
-    lineup: string[];
+    lineup: (string | { name: string; role?: string })[];
   };
   streamingLinks: {
     spotify?: string;
     appleMusic?: string;
     youtubeMusic?: string;
+    soundcloud?: string;
     tidal?: string;
     amazonMusic?: string;
   };
@@ -47,7 +48,7 @@ export interface EventItem {
   city: string;
   country: string;
   status: 'upcoming' | 'past';
-  ticketStatus: 'available' | 'selling_fast' | 'sold_out' | 'closed';
+  ticketStatus: 'available' | 'selling_fast' | 'sold_out' | 'closed' | 'not_live_yet' | 'not_live';
   ticketPrice?: string;
   ticketUrl?: string;
   posterImage: string;
@@ -70,7 +71,7 @@ export interface BandMember {
   joinedYear: number;
   gear: string[];
   quote: string;
-  socials: {
+  socials?: {
     instagram?: string;
     facebook?: string;
   };
@@ -104,74 +105,117 @@ export interface NewsPost {
   tags: string[];
 }
 
-export const RELEASES_DATA: Release[] = [
+export const BAND_MEMBERS: BandMember[] = [
   {
-    _id: "rel-001",
-    slug: "biddrohi-the-rebel",
-    title: "BIDDROHI (The Rebel)",
-    type: "album",
-    releaseDate: "November 24, 2024",
-    year: 2024,
-    coverImage: "/assets/album_biddrohi.jpg",
-    shortDescription: "The monumental full-length album capturing the raw ferocity and emotional depth of BIDDROHO's 13-year sonic evolution.",
-    fullDescription: "Recorded across nine months of relentless intensity, 'BIDDROHI' represents the definitive modern Bengali rock opus. Fusing bone-crushing guitar riffs, intricate progressive keyboard textures, thunderous rhythmic foundations, and searing vocal delivery, the album confronts societal disillusionment, internal strife, and the triumph of the human spirit.",
-    credits: {
-      producedBy: "BIDDROHO & Shuvo Studio Labs",
-      mixedMasteredBy: "Acoustic Fire Audio, Dhaka",
-      recordedAt: "Studio 11 & Sonic Haven Records",
-      artworkBy: "Rebel Design Collective",
-      lineup: [
-        "Srijon — Lead Vocals, Lyricist",
-        "Mahir — Lead Guitars, Backing Vocals",
-        "Alvi — Rhythm & Acoustic Guitars",
-        "Aurko — Bass Guitars",
-        "Arnob — Keyboards, Synthesizers, Atmospheric Textures",
-        "Ridoy — Drums, Percussion, Heavy Groove"
-      ]
-    },
-    streamingLinks: {
-      spotify: "https://open.spotify.com",
-      appleMusic: "https://music.apple.com",
-      youtubeMusic: "https://music.youtube.com",
-      tidal: "https://tidal.com"
-    },
-    youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    featured: true,
-    tracks: [
-      { number: 1, title: "Prothom Aghat (The First Strike)", duration: "4:18" },
-      { number: 2, title: "Chhinno Prohor (Shattered Hours)", duration: "5:02" },
-      { number: 3, title: "Ondhokarer Daanpote", duration: "4:45" },
-      { number: 4, title: "Shikol Bhangar Gaan", duration: "6:12" },
-      { number: 5, title: "Biddrohi (Title Track)", duration: "5:30" },
-      { number: 6, title: "Roddur O Rokto", duration: "3:58" },
-      { number: 7, title: "Kalo Megher Chhaya", duration: "4:24" },
-      { number: 8, title: "Nisshongotar Chupkotha", duration: "5:40" },
-      { number: 9, title: "Shesh Judhdho", duration: "6:33" },
-      { number: 10, title: "Mukti (Outro)", duration: "3:10" }
-    ]
+    id: "srijon",
+    name: "Srijon Tawsif Hossain",
+    role: "Vocalist",
+    instrument: "Lead Vocals",
+    image: "/assets/members/srijon.png",
+    bio: "The commanding frontman and vocal powerhouse of BIDDROHO. Known for intense vocal dynamics shifting from melodic depth to ferocious high-register rock screams.",
+    joinedYear: 2011,
+    gear: ["Shure Beta 58A", "TC-Helicon VoiceLive"],
+    quote: "Every scream carries the weight of a thousand untold stories.",
+    socials: { instagram: "https://instagram.com", facebook: "https://facebook.com" }
   },
   {
-    _id: "rel-002",
-    slug: "shunyo-ep",
-    title: "SHUNYO (Void)",
-    type: "ep",
-    releaseDate: "August 12, 2023",
-    year: 2023,
-    coverImage: "/assets/album_shunyo.jpg",
-    shortDescription: "A dark ambient, progressive-metal conceptual EP exploring existential nihilism and the rebirth of rebellion.",
-    fullDescription: "Born during midnight recording sessions amidst urban solitude, 'SHUNYO' delves into expansive soundscapes, polyrhythmic grooves, and ambient synth layers. It showed the band pushing musical boundaries beyond traditional heavy rock.",
+    id: "alvi",
+    name: "Sayed Alvi Haque",
+    role: "Guitarist",
+    instrument: "Guitars & Harmonies",
+    image: "/assets/members/alvi.png",
+    bio: "Driving the rhythm engine and heavy chord textures. Delivers tight syncopated riffs and atmospheric acoustic layering in BIDDROHO's signature guitar wall.",
+    joinedYear: 2013,
+    gear: ["ESP E-II Eclipse", "Peavey 6505+"],
+    quote: "Rhythm is the bone and muscle of heavy rock.",
+    socials: { instagram: "https://instagram.com" }
+  },
+  {
+    id: "mahir",
+    name: "Mahir Sakib",
+    role: "Guitarist",
+    instrument: "Lead Guitars",
+    image: "/assets/members/mahir.png",
+    bio: "The architect of soaring lead melodies and lightning guitar solos. Fuses expressive vibrato and heavy melodic hooks that define the band's sonic punch.",
+    joinedYear: 2011,
+    gear: ["PRS Custom 24", "Mesa Boogie Dual Rectifier"],
+    quote: "A solo is a vocal confession through six steel strings.",
+    socials: { instagram: "https://instagram.com" }
+  },
+  {
+    id: "arnob",
+    name: "Nawfs Ul Ahsun Arnob",
+    role: "Keyboardist",
+    instrument: "Keyboards & Synthesizers",
+    image: "/assets/members/arnob.png",
+    bio: "The sonic architect crafting cinematic synth soundscapes, progressive keyboard progressions, and dark ambient intros that expand BIDDROHO's musical dimensions.",
+    joinedYear: 2015,
+    gear: ["Nord Stage 3", "Sequential Prophet Rev2", "Moog Subsequent 37"],
+    quote: "Between the heavy distortion, keyboards create space for haunting beauty.",
+    socials: { instagram: "https://instagram.com" }
+  },
+  {
+    id: "aurko",
+    name: "Zhasid Hasan Aurko",
+    role: "Bassist",
+    instrument: "Bass Guitars",
+    image: "/assets/members/aurko.png",
+    bio: "Anchoring the low-end frequency wall with punchy drive and dynamic groove. Locks tightly with the drum strikes to generate bone-shattering low end.",
+    joinedYear: 2012,
+    gear: ["Dingwall NG3 5-String", "Darkglass Microtubes 900"],
+    quote: "If the stage floor isn't vibrating, we haven't done our job.",
+    socials: { instagram: "https://instagram.com" }
+  },
+  {
+    id: "ridoy",
+    name: "Yasin Ridoy",
+    role: "Drummer",
+    instrument: "Drums & Percussion",
+    image: "/assets/members/ridoy.png",
+    bio: "The rhythmic thunder behind the drum kit. Renowned for surgical double-kick control, groove-laden syncopations, and relentless live stamina.",
+    joinedYear: 2011,
+    gear: ["Tama Starclassic Walnut/Birch", "Zildjian K Dark Cymbals"],
+    quote: "The kick and snare are the unstoppable heartbeat of rebellion.",
+    socials: { instagram: "https://instagram.com" }
+  },
+  {
+    id: "tanim",
+    name: "Tanim Reza",
+    role: "Lyricist",
+    instrument: "Lyrics & Conceptual Themes",
+    image: "/assets/logo.png",
+    bio: "The pen behind the rebellion. Penned iconic poetic themes exploring social defiance, existential solitude, and the resilient human spirit for BIDDROHO.",
+    joinedYear: 2011,
+    gear: ["Notebook & Ink", "Philosophy & Literature"],
+    quote: "Words set the flame that the music turns into an inferno.",
+    socials: { facebook: "https://facebook.com" }
+  }
+];
+
+export const RELEASES_DATA: Release[] = [
+  {
+    _id: "demo-rel-001",
+    slug: "demo-album-biddrohi",
+    title: "[DEMO] BIDDROHI (The Rebel)",
+    type: "album",
+    releaseDate: "November 2024",
+    year: 2024,
+    coverImage: "/assets/album_biddrohi.jpg",
+    shortDescription: "Demo studio album showcase demonstrating MongoDB-driven tracklists, streaming links, and production credits.",
+    fullDescription: "This is sample demo release data stored in the MongoDB 'releases' collection. In Phase 2 and admin dashboard integrations, administrators can modify or replace this album content in real time.",
     credits: {
-      producedBy: "BIDDROHO",
-      mixedMasteredBy: "Rebel Sound Labs",
-      recordedAt: "Dhaka Audio Guild",
-      artworkBy: "Eclipse Visuals",
+      producedBy: "BIDDROHO & Demo Audio Labs",
+      mixedMasteredBy: "Acoustic Fire Audio, Dhaka",
+      recordedAt: "Studio 11 (Demo)",
+      artworkBy: "Official Artwork Team",
       lineup: [
-        "Srijon — Vocals",
-        "Mahir — Guitars & FX",
-        "Alvi — Guitars",
-        "Aurko — Bass",
-        "Arnob — Synthesizers & Soundscapes",
-        "Ridoy — Drums & Percussion"
+        "Srijon Tawsif Hossain — Vocalist",
+        "Sayed Alvi Haque — Guitarist",
+        "Mahir Sakib — Guitarist",
+        "Nawfs Ul Ahsun Arnob — Keyboardist",
+        "Zhasid Hasan Aurko — Bassist",
+        "Yasin Ridoy — Drummer",
+        "Tanim Reza — Lyricist"
       ]
     },
     streamingLinks: {
@@ -180,25 +224,53 @@ export const RELEASES_DATA: Release[] = [
       youtubeMusic: "https://music.youtube.com"
     },
     youtubeUrl: "https://www.youtube.com",
-    featured: false,
+    featured: true,
     tracks: [
-      { number: 1, title: "Mohakash (Cosmos)", duration: "5:15" },
-      { number: 2, title: "Shunyo Shobdo (Void Echoes)", duration: "4:50" },
-      { number: 3, title: "Nirbashon (Exile)", duration: "5:34" },
-      { number: 4, title: "Dhulor Manush", duration: "4:28" },
-      { number: 5, title: "Probashir Shur (The Journey)", duration: "6:05" }
+      { number: 1, title: "[Demo Track 01] Prothom Aghat", duration: "4:18" },
+      { number: 2, title: "[Demo Track 02] Chhinno Prohor", duration: "5:02" },
+      { number: 3, title: "[Demo Track 03] Ondhokarer Daanpote", duration: "4:45" },
+      { number: 4, title: "[Demo Track 04] Shikol Bhangar Gaan", duration: "6:12" },
+      { number: 5, title: "[Demo Track 05] Biddrohi", duration: "5:30" }
     ]
   },
   {
-    _id: "rel-003",
-    slug: "chhinno-prohor",
-    title: "Chhinno Prohor",
+    _id: "demo-rel-002",
+    slug: "demo-ep-shunyo",
+    title: "[DEMO] SHUNYO (Void) EP",
+    type: "ep",
+    releaseDate: "August 2023",
+    year: 2023,
+    coverImage: "/assets/album_shunyo.jpg",
+    shortDescription: "Demo conceptual EP demonstrating multi-track listings and high-definition artwork fetched dynamically from MongoDB.",
+    fullDescription: "Sample demo EP record demonstrating how MongoDB manages album categories, genres, track durations, and digital distribution portals.",
+    credits: {
+      producedBy: "BIDDROHO (Demo)",
+      mixedMasteredBy: "Rebel Sound Labs",
+      recordedAt: "Dhaka Central",
+      artworkBy: "Eclipse Visuals",
+      lineup: ["BIDDROHO Official Band Lineup"]
+    },
+    streamingLinks: {
+      spotify: "https://open.spotify.com"
+    },
+    youtubeUrl: "https://www.youtube.com",
+    featured: false,
+    tracks: [
+      { number: 1, title: "[Demo Track 01] Mohakash", duration: "5:15" },
+      { number: 2, title: "[Demo Track 02] Shunyo Shobdo", duration: "4:50" },
+      { number: 3, title: "[Demo Track 03] Nirbashon", duration: "5:34" }
+    ]
+  },
+  {
+    _id: "demo-rel-003",
+    slug: "demo-single-chhinno-prohor",
+    title: "[DEMO] Chhinno Prohor (Single)",
     type: "single",
-    releaseDate: "October 10, 2024",
+    releaseDate: "October 2024",
     year: 2024,
     coverImage: "/assets/album_biddrohi.jpg",
-    shortDescription: "The breakout heavy single with crushing riffs and soaring anthemic choruses that ignited rock radio.",
-    fullDescription: "Single release predecessor to the full-length 'BIDDROHI' album. Received widespread acclaim across the underground and mainstream rock communities for its fierce momentum.",
+    shortDescription: "Demo standalone single entry illustrating single release templates and acoustic redux cuts.",
+    fullDescription: "Demo data stored inside MongoDB showing single track metadata.",
     credits: {
       producedBy: "BIDDROHO",
       mixedMasteredBy: "Acoustic Fire Audio",
@@ -207,50 +279,22 @@ export const RELEASES_DATA: Release[] = [
       lineup: ["BIDDROHO All Members"]
     },
     streamingLinks: {
-      spotify: "https://open.spotify.com",
-      appleMusic: "https://music.apple.com"
-    },
-    youtubeUrl: "https://www.youtube.com",
-    featured: false,
-    tracks: [
-      { number: 1, title: "Chhinno Prohor", duration: "5:02" },
-      { number: 2, title: "Chhinno Prohor (Acoustic Redux)", duration: "4:30" }
-    ]
-  },
-  {
-    _id: "rel-004",
-    slug: "protibad",
-    title: "Protibad",
-    type: "single",
-    releaseDate: "March 15, 2023",
-    year: 2023,
-    coverImage: "/assets/album_shunyo.jpg",
-    shortDescription: "A fierce political anthem decrying institutional hypocrisy and honoring the voices that refuse to be silenced.",
-    fullDescription: "An electrifying live staple that consistently erupts mosh pits nationwide.",
-    credits: {
-      producedBy: "BIDDROHO",
-      mixedMasteredBy: "Soundscape Studio",
-      recordedAt: "Dhaka Central",
-      artworkBy: "Rebel Art",
-      lineup: ["BIDDROHO All Members"]
-    },
-    streamingLinks: {
       spotify: "https://open.spotify.com"
     },
     youtubeUrl: "https://www.youtube.com",
     featured: false,
     tracks: [
-      { number: 1, title: "Protibad", duration: "4:42" }
+      { number: 1, title: "[Demo Single] Chhinno Prohor", duration: "5:02" }
     ]
   }
 ];
 
 export const EVENTS_DATA: EventItem[] = [
   {
-    _id: "evt-001",
-    slug: "dhaka-rock-fest-2026",
-    title: "Dhaka Rock Fest 2026",
-    tourName: "BIDDROHO Nation Tour",
+    _id: "demo-evt-001",
+    slug: "demo-dhaka-rock-fest-2026",
+    title: "[DEMO EVENT] Dhaka Rock Fest 2026",
+    tourName: "BIDDROHO Live Tour (Demo)",
     date: "2026-11-20",
     formattedDate: "NOVEMBER 20, 2026",
     time: "6:00 PM - 11:00 PM",
@@ -259,13 +303,13 @@ export const EVENTS_DATA: EventItem[] = [
     country: "Bangladesh",
     status: "upcoming",
     ticketStatus: "selling_fast",
-    ticketPrice: "BDT 800 - BDT 2,500 (VIP)",
+    ticketPrice: "BDT 800 - BDT 2,500 (Demo)",
     ticketUrl: "https://shohoz.com",
     posterImage: "/assets/tour_poster.jpg",
-    description: "The biggest rock celebration of the decade! BIDDROHO headlines alongside the greatest rock acts in the country for an unforgettable 5-hour sonic onslaught under stadium lights.",
-    ageRestriction: "All Ages (Under 14 accompanied by adult)",
+    description: "Sample demo concert event pulled live from MongoDB Atlas. Demonstrates ticket tiering, venue geolocation, and supporting act billings.",
+    ageRestriction: "All Ages",
     doorsOpen: "4:30 PM",
-    supportingActs: ["Nemesis", "Cryptic Fate", "Mechanix", "Powersurge"],
+    supportingActs: ["Co-Artist 01 (Demo)", "Co-Artist 02 (Demo)"],
     galleryImages: [
       "/assets/hero_live.jpg",
       "/assets/members/srijon.png",
@@ -273,10 +317,10 @@ export const EVENTS_DATA: EventItem[] = [
     ]
   },
   {
-    _id: "evt-002",
-    slug: "chittagong-thunder-live",
-    title: "Chittagong Thunder Live",
-    tourName: "BIDDROHO Nation Tour",
+    _id: "demo-evt-002",
+    slug: "demo-chittagong-thunder-live",
+    title: "[DEMO EVENT] Chittagong Thunder Live",
+    tourName: "BIDDROHO Live Tour (Demo)",
     date: "2026-12-05",
     formattedDate: "DECEMBER 05, 2026",
     time: "7:00 PM - 10:30 PM",
@@ -285,13 +329,13 @@ export const EVENTS_DATA: EventItem[] = [
     country: "Bangladesh",
     status: "upcoming",
     ticketStatus: "available",
-    ticketPrice: "BDT 600 - BDT 1,800",
+    ticketPrice: "BDT 600 - BDT 1,800 (Demo)",
     ticketUrl: "https://getmyticket.com",
     posterImage: "/assets/tour_poster.jpg",
-    description: "Bringing the storm to the Port City. Expect a ruthless two-hour headline set featuring all tracks from 'BIDDROHI' and timeless classic anthems.",
+    description: "Sample demo upcoming headline concert entry managed inside MongoDB Atlas.",
     ageRestriction: "16+",
     doorsOpen: "5:30 PM",
-    supportingActs: ["Stentorian", "Bay of Bengal"],
+    supportingActs: ["Guest Outfit (Demo)"],
     galleryImages: [
       "/assets/hero_live.jpg",
       "/assets/members/alvi.png",
@@ -299,382 +343,160 @@ export const EVENTS_DATA: EventItem[] = [
     ]
   },
   {
-    _id: "evt-003",
-    slug: "sylhet-sonic-rebellion",
-    title: "Sylhet Sonic Rebellion",
-    tourName: "BIDDROHO Nation Tour",
-    date: "2026-12-18",
-    formattedDate: "DECEMBER 18, 2026",
-    time: "6:30 PM - 10:00 PM",
-    venue: "Amanullah Convention Hall",
-    city: "Sylhet",
-    country: "Bangladesh",
-    status: "upcoming",
-    ticketStatus: "available",
-    ticketPrice: "BDT 500 - BDT 1,500",
-    ticketUrl: "https://shohoz.com",
-    posterImage: "/assets/tour_poster.jpg",
-    description: "BIDDROHO's triumphant return to Sylhet. High octane energy, immersive synchronized lighting, and intimate heavy rock vibes.",
-    ageRestriction: "All Ages",
-    doorsOpen: "5:00 PM",
-    supportingActs: ["Level Five", "Local Heavy Outfit"],
-    galleryImages: [
-      "/assets/hero_live.jpg",
-      "/assets/members/arnob.png",
-      "/assets/members/aurko.png"
-    ]
-  },
-  {
-    _id: "evt-004",
-    slug: "rock-carnival-dhaka-2025",
-    title: "Rock Carnival Dhaka 2025",
-    tourName: "BIDDROHI Album Showcase",
+    _id: "demo-evt-003",
+    slug: "demo-past-rock-carnival-2025",
+    title: "[DEMO EVENT] Past Rock Carnival 2025",
+    tourName: "Winter Showcase (Demo)",
     date: "2025-12-14",
     formattedDate: "DECEMBER 14, 2025",
     time: "4:00 PM - 11:00 PM",
-    venue: "ICCB Hall 4, Bashundhara",
+    venue: "ICCB Hall 4",
     city: "Dhaka",
     country: "Bangladesh",
     status: "past",
     ticketStatus: "sold_out",
     posterImage: "/assets/tour_poster.jpg",
-    description: "A sold-out spectacle of over 8,000 screaming rock enthusiasts. BIDDROHO debuted 6 brand-new unreleased tracks to an electrifying pit.",
+    description: "Sample past concert record showcasing historical setlists and stage galleries.",
     ageRestriction: "All Ages",
     doorsOpen: "3:00 PM",
     setlist: [
-      "Prothom Aghat",
-      "Chhinno Prohor",
-      "Protibad",
-      "Mohakash",
-      "Shunyo Shobdo",
-      "Shikol Bhangar Gaan",
-      "Biddrohi (Encore)"
+      "Demo Track 01 - Prothom Aghat",
+      "Demo Track 02 - Chhinno Prohor",
+      "Demo Track 03 - Biddrohi"
     ],
     galleryImages: [
       "/assets/hero_live.jpg",
       "/assets/members/srijon.png",
-      "/assets/members/mahir.png",
       "/assets/members/ridoy.png"
     ]
-  },
-  {
-    _id: "evt-005",
-    slug: "underground-fury-khulna-2025",
-    title: "Underground Fury Khulna",
-    tourName: "Winter Rebellion",
-    date: "2025-11-08",
-    formattedDate: "NOVEMBER 08, 2025",
-    time: "6:00 PM - 10:30 PM",
-    venue: "Shaheed Hadis Park Grounds",
-    city: "Khulna",
-    country: "Bangladesh",
-    status: "past",
-    ticketStatus: "sold_out",
-    posterImage: "/assets/tour_poster.jpg",
-    description: "An explosive evening marked by unmatched crowd singalongs and raw rock intensity.",
-    ageRestriction: "All Ages",
-    doorsOpen: "5:00 PM",
-    galleryImages: [
-      "/assets/hero_live.jpg",
-      "/assets/members/aurko.png",
-      "/assets/members/alvi.png"
-    ]
-  }
-];
-
-export const BAND_MEMBERS: BandMember[] = [
-  {
-    id: "srijon",
-    name: "Srijon",
-    role: "Lead Vocalist & Songwriter",
-    instrument: "Vocals",
-    image: "/assets/members/srijon.png",
-    bio: "The commanding voice and fiery spirit at the helm of BIDDROHO. Renowned for his piercing vocal range that seamlessly transitions from deep brooding baritone intimacy to razor-sharp stadium screams. Srijon's lyrical themes embody rebellion, human liberation, and philosophical awakening.",
-    joinedYear: 2011,
-    gear: [
-      "Shure SM58 Wireless Beta",
-      "Neumann KMS 105 Stage Condenser",
-      "TC-Helicon VoiceLive 3 Extreme"
-    ],
-    quote: "Rock music in our blood is not mere entertainment; it is our refusal to submit to silence.",
-    socials: {
-      instagram: "https://instagram.com",
-      facebook: "https://facebook.com"
-    }
-  },
-  {
-    id: "mahir",
-    name: "Mahir",
-    role: "Lead Guitarist",
-    instrument: "Lead Guitars & Solos",
-    image: "/assets/members/mahir.png",
-    bio: "The architect of BIDDROHO's signature screaming solos and intricate modal harmonies. Blending neo-classical precision with ferocious groove metal riffs, Mahir's blistering leads deliver both technical supremacy and visceral emotional depth.",
-    joinedYear: 2011,
-    gear: [
-      "PRS Custom 24 Ten Top",
-      "Ibanez J.Custom RG Series",
-      "Mesa/Boogie Dual Rectifier Head",
-      "Kemper Profiler Stage",
-      "Horizon Devices Precision Drive"
-    ],
-    quote: "A riff must punch through your ribs before it ever touches your ears.",
-    socials: {
-      instagram: "https://instagram.com"
-    }
-  },
-  {
-    id: "alvi",
-    name: "Alvi",
-    role: "Guitars & Harmonies",
-    instrument: "Rhythm & Acoustic Guitars",
-    image: "/assets/members/alvi.png",
-    bio: "The rhythmic engine of the guitar wall. Alvi provides the chugging low-end aggression, tight syncopated picking, and lush acoustic textures that build BIDDROHO's titanic wall of sound.",
-    joinedYear: 2013,
-    gear: [
-      "ESP E-II Eclipse Full Thickness",
-      "Fender Telecaster American Ultra",
-      "Peavey 5150 Mk II",
-      "Strymon Timeline & BigSky"
-    ],
-    quote: "Tight rhythms turn chaotic noise into unstoppable momentum.",
-    socials: {
-      instagram: "https://instagram.com"
-    }
-  },
-  {
-    id: "aurko",
-    name: "Aurko",
-    role: "Bass Guitarist",
-    instrument: "Bass Guitars",
-    image: "/assets/members/aurko.png",
-    bio: "Anchoring the band with bone-rattling low frequencies and dynamic counter-melodies. Aurko's groove locks seamlessly into the drums, supplying the visceral physical impact that defines every BIDDROHO live performance.",
-    joinedYear: 2012,
-    gear: [
-      "Dingwall NG3 5-String Adam Nolly",
-      "Fender Precision Bass 1974 Vintage",
-      "Darkglass Microtubes 900 V2",
-      "Darkglass B7K Ultra Preamp"
-    ],
-    quote: "If the floor isn't vibrating beneath your feet, we haven't done our job.",
-    socials: {
-      instagram: "https://instagram.com"
-    }
-  },
-  {
-    id: "arnob",
-    name: "Arnob",
-    role: "Keyboards & Synthesizers",
-    instrument: "Keys, Synths & Sound Design",
-    image: "/assets/members/arnob.png",
-    bio: "The atmospheric mastermind weaving haunting orchestral arrangements, cutting analog synth lines, and cinematic soundscapes throughout the heavy wall of guitars. Arnob gives BIDDROHO its progressive and immersive dimension.",
-    joinedYear: 2015,
-    gear: [
-      "Nord Stage 3 88",
-      "Moog Subsequent 37 Analog Synth",
-      "Sequential Prophet-6",
-      "MainStage Live Rig"
-    ],
-    quote: "Between the heavy distortion lives space for haunting beauty.",
-    socials: {
-      instagram: "https://instagram.com"
-    }
-  },
-  {
-    id: "ridoy",
-    name: "Ridoy",
-    role: "Drums & Percussion",
-    instrument: "Drums & Percussion",
-    image: "/assets/members/ridoy.png",
-    bio: "A human powerhouse behind the kit. Known for explosive double-kick footwork, surgical polyrhythms, and thunderous snare strikes that keep mosh pits in perpetual motion.",
-    joinedYear: 2011,
-    gear: [
-      "Tama Starclassic Walnut/Birch Drum Kit",
-      "Zildjian K Custom Dark Cymbals",
-      "Trick Pro 1-V Bigfoot Double Pedals",
-      "Vic Firth 5B Chop Sticks"
-    ],
-    quote: "Every hit is an explosion; the heartbeat never stops.",
-    socials: {
-      instagram: "https://instagram.com"
-    }
   }
 ];
 
 export const MEDIA_ITEMS: MediaItem[] = [
   {
     id: "med-001",
-    title: "Srijon Unleashing The Anthems",
+    title: "Srijon Tawsif Hossain — Live Frontman",
     type: "photo",
     category: "live",
     url: "/assets/members/srijon.png",
     thumbnailUrl: "/assets/members/srijon.png",
-    date: "Dec 2025",
-    caption: "Frontman Srijon commanding the stadium at Rock Carnival Dhaka.",
-    location: "Army Stadium, Dhaka"
+    date: "Demo 2025",
+    caption: "Vocalist Srijon Tawsif Hossain commanding the live audience.",
+    location: "Live Stage, Dhaka"
   },
   {
     id: "med-002",
-    title: "Mahir's Solo Peak",
-    type: "photo",
-    category: "live",
-    url: "/assets/members/mahir.png",
-    thumbnailUrl: "/assets/members/mahir.png",
-    date: "Dec 2025",
-    caption: "Mahir in the zone during the blistering 3-minute solo of 'Chhinno Prohor'.",
-    location: "ICCB, Dhaka"
-  },
-  {
-    id: "med-003",
-    title: "Alvi Heavy Riff Energy",
+    title: "Sayed Alvi Haque — Rhythm Riff Assault",
     type: "photo",
     category: "live",
     url: "/assets/members/alvi.png",
     thumbnailUrl: "/assets/members/alvi.png",
-    date: "Dec 2025",
-    caption: "Alvi laying down the heavy low-end rhythm assault under warm tungsten stage lights.",
-    location: "Dhaka Live"
+    date: "Demo 2025",
+    caption: "Guitarist Sayed Alvi Haque delivering heavy rhythm riffs.",
+    location: "Live Stage, Dhaka"
+  },
+  {
+    id: "med-003",
+    title: "Mahir Sakib — Searing Lead Solo",
+    type: "photo",
+    category: "live",
+    url: "/assets/members/mahir.png",
+    thumbnailUrl: "/assets/members/mahir.png",
+    date: "Demo 2025",
+    caption: "Guitarist Mahir Sakib performing a blistering lead guitar solo.",
+    location: "Live Stage, Dhaka"
   },
   {
     id: "med-004",
-    title: "Aurko Live Bass Groove",
-    type: "photo",
-    category: "live",
-    url: "/assets/members/aurko.png",
-    thumbnailUrl: "/assets/members/aurko.png",
-    date: "Dec 2025",
-    caption: "Aurko locking with the kick drum to shake the stadium floor.",
-    location: "Chittagong Stage"
-  },
-  {
-    id: "med-005",
-    title: "Arnob Synth Atmosphere",
+    title: "Nawfs Ul Ahsun Arnob — Synth Atmosphere",
     type: "photo",
     category: "live",
     url: "/assets/members/arnob.png",
     thumbnailUrl: "/assets/members/arnob.png",
-    date: "Nov 2025",
-    caption: "Arnob orchestrating the haunting intros and synth soundscapes.",
-    location: "Studio 11 Sessions"
+    date: "Demo 2025",
+    caption: "Keyboardist Nawfs Ul Ahsun Arnob orchestrating synth soundscapes.",
+    location: "Studio & Live"
+  },
+  {
+    id: "med-005",
+    title: "Zhasid Hasan Aurko — Stage Low End",
+    type: "photo",
+    category: "live",
+    url: "/assets/members/aurko.png",
+    thumbnailUrl: "/assets/members/aurko.png",
+    date: "Demo 2025",
+    caption: "Bassist Zhasid Hasan Aurko holding down the stadium low end.",
+    location: "Concert Stage"
   },
   {
     id: "med-006",
-    title: "Ridoy Thunderous Drums",
+    title: "Yasin Ridoy — Drums Power",
     type: "photo",
     category: "live",
     url: "/assets/members/ridoy.png",
     thumbnailUrl: "/assets/members/ridoy.png",
-    date: "Dec 2025",
-    caption: "Ridoy in full flight on the Tama Starclassic kit.",
-    location: "Rock Carnival Dhaka"
+    date: "Demo 2025",
+    caption: "Drummer Yasin Ridoy delivering thunderous live percussion.",
+    location: "Live Stage, Dhaka"
   },
   {
     id: "med-007",
-    title: "Full Arena Stage Silhouette",
+    title: "Stadium Silhouette Live",
     type: "photo",
     category: "live",
     url: "/assets/hero_live.jpg",
     thumbnailUrl: "/assets/hero_live.jpg",
-    date: "2025",
-    caption: "25,000 flashlights lighting up the stage as BIDDROHO closes the night.",
-    location: "National Rock Fest"
+    date: "Demo 2025",
+    caption: "Full arena crowd singing along under stage lights.",
+    location: "Stadium Arena"
   },
   {
     id: "med-008",
-    title: "Chhinno Prohor (Official Music Video)",
+    title: "[DEMO VIDEO] Chhinno Prohor Live Concert Footage",
     type: "video",
     category: "live",
     url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     thumbnailUrl: "/assets/hero_live.jpg",
-    date: "Oct 2024",
-    caption: "The official visual companion to the smash single 'Chhinno Prohor', filmed in industrial Dhaka.",
-    youtubeId: "dQw4w9WgXcQ"
-  },
-  {
-    id: "med-009",
-    title: "Live at Rock Carnival — Full 4K Performance",
-    type: "video",
-    category: "live",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    thumbnailUrl: "/assets/tour_poster.jpg",
-    date: "Jan 2026",
-    caption: "Full multi-camera broadcast capture of the 80-minute headline set.",
+    date: "Demo 2025",
+    caption: "Demo concert video embed demonstrating MongoDB media documents.",
     youtubeId: "dQw4w9WgXcQ"
   }
 ];
 
 export const NEWS_POSTS: NewsPost[] = [
   {
-    _id: "news-001",
-    slug: "nationwide-2026-thunder-tour-announced",
-    title: "BIDDROHO Announces Nationwide 2026 Thunder Tour & New Studio Works",
+    _id: "demo-news-001",
+    slug: "demo-tour-announcement-2026",
+    title: "[DEMO ARTICLE] BIDDROHO Announces 2026 Live Tour Dates",
     date: "OCTOBER 02, 2026",
     category: "Announcement",
-    readTime: "4 min read",
+    readTime: "3 min read",
     coverImage: "/assets/tour_poster.jpg",
     featured: true,
-    excerpt: "The six-piece heavy rock behemoth prepares for their most ambitious cross-country arena tour to date, visiting Dhaka, Chittagong, Sylhet, and Rajshahi.",
-    author: "BIDDROHO Official",
-    tags: ["Tour", "Live", "Announcement", "Stage"],
+    excerpt: "Demo news post retrieved live from MongoDB database, illustrating article formatting, tags, and categories.",
+    author: "BIDDROHO Management",
+    tags: ["Tour", "Demo", "MongoDB", "Announcement"],
     content: [
-      "After eighteen months spent crafting and refining their latest sonic arsenal in the studio, BIDDROHO has officially unveiled dates for the 2026 Thunder Tour across Bangladesh.",
-      "The tour marks a momentous milestone for the band, celebrating over fifteen years of independent rock defiance since their inception in 2011. Equipped with a custom-engineered arena lighting production, immersive sub-bass arrays, and an expanded setlist spanning classic anthems to never-before-heard cuts, the tour is slated to begin this November in Dhaka's Army Stadium.",
-      "'We haven't been on the road with this scale of production ever before,' said frontman Srijon during a press brief. 'Every single town we visit is going to feel the physical tremor of this music. We are playing louder, harder, and closer to our fans than ever before.'",
-      "Tickets for the Dhaka, Chittagong, and Sylhet shows are available immediately through official ticketing partners. Early bird passes in all sectors are moving swiftly."
+      "This is an official demo press article dynamically pulled from your MongoDB Atlas database collection 'news'.",
+      "The full lineup features Vocalist Srijon Tawsif Hossain, Guitarists Sayed Alvi Haque and Mahir Sakib, Keyboardist Nawfs Ul Ahsun Arnob, Bassist Zhasid Hasan Aurko, Drummer Yasin Ridoy, and Lyricist Tanim Reza.",
+      "In Phase 2, this section will connect directly with an admin CMS for creating, drafting, and publishing articles."
     ]
   },
   {
-    _id: "news-002",
-    slug: "behind-the-riffs-chhinno-prohor",
-    title: "Behind the Riffs: The Making of Our Heaviest Anthem 'Chhinno Prohor'",
-    date: "SEPTEMBER 18, 2026",
+    _id: "demo-news-002",
+    slug: "demo-studio-sessions-recordings",
+    title: "[DEMO ARTICLE] Inside The Studio Sessions: Heavy Guitar Recordings",
+    date: "SEPTEMBER 20, 2026",
     category: "Behind The Music",
-    readTime: "6 min read",
+    readTime: "4 min read",
     coverImage: "/assets/hero_live.jpg",
     featured: false,
-    excerpt: "Guitarists Mahir and Alvi break down the Drop-D tuning, polyrhythmic time changes, and emotional crucible that birthed the chart-topping single.",
-    author: "Mahir & Arnob",
-    tags: ["Studio", "Guitars", "Production"],
+    excerpt: "Demo behind-the-scenes recording breakdown stored in MongoDB.",
+    author: "Sayed Alvi Haque & Mahir Sakib",
+    tags: ["Studio", "Guitars", "Demo"],
     content: [
-      "When we first sat down in Studio 11 at 2:00 AM last December, none of us expected 'Chhinno Prohor' to become the monster it is today.",
-      "Mahir started jamming a jagged, off-kilter rhythm in 7/8 time over a pulsing analog Moog arpeggiation that Arnob had looping on repeat. Ridoy walked into the live room, picked up his sticks without saying a word, and delivered the syncopated groove that instantly gave the song its heart.",
-      "The vocal delivery took over 40 takes to capture the exact degree of visceral exhaustion and emotional breakthrough that Srijon envisioned. We didn't use auto-tune; we didn't sanitize the grit. Every crack in the voice, every scrape of the guitar strings was deliberately kept raw.",
-      "Today, watching tens of thousands of voices roar those exact lyrics back to us in concert is the greatest vindication any musician could ever dream of."
-    ]
-  },
-  {
-    _id: "news-003",
-    slug: "biddroho-headlines-dhaka-rock-fest-25k-fans",
-    title: "BIDDROHO Headlines Dhaka Rock Fest to a Roaring Crowd of 25,000",
-    date: "AUGUST 30, 2026",
-    category: "Live",
-    readTime: "3 min read",
-    coverImage: "/assets/album_biddrohi.jpg",
-    featured: false,
-    excerpt: "A historic night of blistering guitar solos, synchronized mosh pits, and deafening anthems as the capital celebrated raw underground rock.",
-    author: "Music Desk",
-    tags: ["Review", "Live", "Stadium"],
-    content: [
-      "The atmosphere inside Army Stadium on Saturday night was nothing short of incandescent. By the time BIDDROHO took the stage at 9:15 PM under deep red strobes, the 25,000-strong crowd was chanting the band's name in unison.",
-      "Opening with the crushing intro of 'Prothom Aghat', the band never took their foot off the gas pedal. Between Mahir's searing solos, Aurko's chest-thumping bass riffs, and Srijon's electrifying stage presence, the entire venue became a single undulating wave of headbanging rock lovers.",
-      "Critics and fans alike have hailed the performance as the undisputed concert benchmark of the year."
-    ]
-  },
-  {
-    _id: "news-004",
-    slug: "exclusive-vinyl-and-merch-capsule-collection",
-    title: "Upcoming 15th Anniversary Vinyl & Heavy Weight Apparel Drop",
-    date: "JULY 14, 2026",
-    category: "Press",
-    readTime: "2 min read",
-    coverImage: "/assets/album_shunyo.jpg",
-    featured: false,
-    excerpt: "A preview of the limited-edition 180g blood-splatter vinyl pressing of 'BIDDROHI' and bespoke heavyweight tour hoodies.",
-    author: "BIDDROHO Merch Dept",
-    tags: ["Merch", "Vinyl", "Collectibles"],
-    content: [
-      "To commemorate the 15th anniversary of BIDDROHO's founding in 2011, the band is proud to announce an ultra-limited collector's vinyl box set.",
-      "Pressed on premium 180-gram blood-red marbled vinyl at Abbey Road Mastering, each copy will feature foil-embossed gatefold packaging, exclusive behind-the-scenes photography, and lyric inserts signed by all six band members.",
-      "Pre-order notifications will be dispatched exclusively to subscribers on our official website later this season."
+      "Sample studio log demonstrating rich editorial formatting pulled from the database.",
+      "The audio gear and progressive arrangements reflect the band's authentic heavy rock ethos."
     ]
   }
 ];

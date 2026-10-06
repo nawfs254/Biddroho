@@ -1,19 +1,32 @@
 import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Calendar, MapPin, Ticket, Clock, ArrowRight, ShieldCheck, Flame } from 'lucide-react';
-import { EVENTS_DATA } from '@/data/mockData';
+import { getEvents } from '@/lib/dataService';
 import EventCard from '@/components/EventCard';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: 'Live Shows & Tour Dates',
   description: 'Official tour dates and concerts for BIDDROHO. Stadium shows, rock festivals, and venue performances across Bangladesh.'
 };
 
-export default function EventsPage() {
-  const upcomingEvents = EVENTS_DATA.filter((e) => e.status === 'upcoming');
-  const pastEvents = EVENTS_DATA.filter((e) => e.status === 'past');
+export default async function EventsPage() {
+  const events = await getEvents();
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const isUpcoming = (e: any) => {
+    if (e.status === 'upcoming') return true;
+    if (e.status === 'past') return false;
+    if (!e.date) return true;
+    return new Date(e.date) >= today;
+  };
+
+  const upcomingEvents = events.filter(isUpcoming);
+  const pastEvents = events.filter((e) => !isUpcoming(e));
 
   return (
     <div style={{ backgroundColor: '#050506', minHeight: '100vh', paddingBottom: '6rem' }}>
@@ -28,7 +41,7 @@ export default function EventsPage() {
       >
         <div className="ambient-glow-spot" style={{ top: '-100px', left: '-50px' }} />
         <div className="site-container" style={{ position: 'relative', zIndex: 1 }}>
-          <span className="editorial-badge">// CONCERTS & TOURS</span>
+          <span className="editorial-badge">// CONCERTS & TOURS (MONGODB)</span>
           <h1 className="section-title">THE LIVE CRUCIBLE</h1>
           <p className="section-description">
             Experience the thunderous volume, physical intensity, and unified chanting of thousands. Secure official passes or review recaps of legendary past performances.
@@ -46,11 +59,19 @@ export default function EventsPage() {
             </h2>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {upcomingEvents.map((event) => (
-              <EventCard key={event._id} event={event} />
-            ))}
-          </div>
+          {upcomingEvents.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {upcomingEvents.map((event) => (
+                <EventCard key={event._id} event={event} />
+              ))}
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '4rem 1.5rem', border: '1px dashed var(--border-subtle)', background: 'rgba(255, 255, 255, 0.01)' }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: '1rem', margin: 0 }}>
+                No data available
+              </p>
+            </div>
+          )}
 
           {/* Ticket assurance banner */}
           <div
@@ -73,7 +94,7 @@ export default function EventsPage() {
                   OFFICIAL TICKETING GUARANTEE
                 </strong>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-                  Always purchase tickets only through authorized links displayed on this official website to prevent black-market counterfeit passes.
+                  Always purchase tickets only through authorized links displayed on this official website to prevent counterfeit passes.
                 </p>
               </div>
             </div>
@@ -86,23 +107,25 @@ export default function EventsPage() {
       </section>
 
       {/* 2. PAST PERFORMANCES */}
-      <section className="section-py">
-        <div className="site-container">
-          <div style={{ marginBottom: '2.5rem' }}>
-            <span className="editorial-badge">// ARCHIVES</span>
-            <h2 className="section-title" style={{ fontSize: '2.5rem' }}>PAST CONCERT ARCHIVES</h2>
-            <p className="section-description">
-              Browse photo sets, setlists, and stage recaps from previous headline performances.
-            </p>
-          </div>
+      {pastEvents.length > 0 && (
+        <section className="section-py">
+          <div className="site-container">
+            <div style={{ marginBottom: '2.5rem' }}>
+              <span className="editorial-badge">// ARCHIVES</span>
+              <h2 className="section-title" style={{ fontSize: '2.5rem' }}>PAST CONCERT ARCHIVES</h2>
+              <p className="section-description">
+                Browse photo sets, setlists, and stage recaps from previous headline performances.
+              </p>
+            </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {pastEvents.map((event) => (
-              <EventCard key={event._id} event={event} />
-            ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {pastEvents.map((event) => (
+                <EventCard key={event._id} event={event} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

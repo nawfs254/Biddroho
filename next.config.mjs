@@ -4,6 +4,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  experimental: {
+    cpus: 2,
+    workerThreads: false,
+  },
 };
 
 export default nextConfig;
