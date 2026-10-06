@@ -1,8 +1,8 @@
 import { MongoClient, Db, ObjectId } from 'mongodb';
 
 const options = {
-  serverSelectionTimeoutMS: 5000,
-  connectTimeoutMS: 5000,
+  serverSelectionTimeoutMS: 10000,
+  connectTimeoutMS: 10000,
 };
 
 declare global {
