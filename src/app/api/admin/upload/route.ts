@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
+import { getDatabase } from '@/lib/mongodb';
 import { getCurrentUser } from '@/lib/permissions/rbac';
 import { recordAuditLog } from '@/lib/audit/logger';
+
+export const dynamic = 'force-dynamic';
 
 // Max file size: 15MB
 const MAX_FILE_SIZE = 15 * 1024 * 1024;
@@ -58,12 +61,34 @@ export async function POST(req: NextRequest) {
     const uniqueId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
     const finalFilename = `${cleanBase || 'media'}-${uniqueId}${ext}`;
 
-    // Target directory: public/uploads/{category}
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', category);
-    await mkdir(uploadDir, { recursive: true });
+    // 1. Primary Storage: Store buffer in MongoDB (Works everywhere, including Vercel serverless)
+    const db = await getDatabase();
+    await db.collection('media_files').updateOne(
+      { filename: finalFilename },
+      {
+        $set: {
+          filename: finalFilename,
+          category,
+          contentType: file.type,
+          data: buffer,
+          size: file.size,
+          originalName: file.name,
+          createdAt: new Date(),
+        },
+      },
+      { upsert: true }
+    );
 
-    const filePath = path.join(uploadDir, finalFilename);
-    await writeFile(filePath, buffer);
+    // 2. Secondary Storage: Attempt local disk cache if filesystem is writable
+    try {
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads', category);
+      await mkdir(uploadDir, { recursive: true });
+      const filePath = path.join(uploadDir, finalFilename);
+      await writeFile(filePath, buffer);
+    } catch {
+      // Expected in serverless/Vercel (EROFS read-only filesystem).
+      // File is safely stored in MongoDB and served by Next.js /api/uploads rewrite.
+    }
 
     const publicUrl = `/uploads/${category}/${finalFilename}`;
 
