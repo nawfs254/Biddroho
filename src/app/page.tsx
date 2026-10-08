@@ -22,7 +22,7 @@ import {
 import ReleaseCard from "@/components/ReleaseCard";
 import EventCard from "@/components/EventCard";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function HomePage() {
@@ -39,15 +39,13 @@ export default async function HomePage() {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const isUpcoming = (e: any) => {
-    if (e.status === 'upcoming') return true;
-    if (e.status === 'past') return false;
+    if (e.status === "upcoming") return true;
+    if (e.status === "past") return false;
     if (!e.date) return true;
     return new Date(e.date) >= today;
   };
 
-  const upcomingEvents = events
-    .filter(isUpcoming)
-    .slice(0, 2);
+  const upcomingEvents = events.filter(isUpcoming).slice(0, 2);
   const featuredMedia = mediaItems.slice(0, 4);
   const latestNews = newsItems.slice(0, 3);
 
@@ -278,9 +276,7 @@ export default async function HomePage() {
               }}
             >
               <div>
-                <span className="editorial-badge">
-                  // NEW RELEASE (MONGODB)
-                </span>
+                <span className="editorial-badge">// NEW RELEASE</span>
                 <h2 className="section-title">THE LATEST RECORD</h2>
               </div>
               <Link href="/music" className="btn-outline-red">
@@ -457,10 +453,10 @@ export default async function HomePage() {
                       title="Spotify link not available"
                       style={{
                         opacity: 0.35,
-                        cursor: 'not-allowed',
-                        color: '#71717a',
-                        borderColor: 'rgba(255, 255, 255, 0.1)',
-                        backgroundColor: 'transparent'
+                        cursor: "not-allowed",
+                        color: "#71717a",
+                        borderColor: "rgba(255, 255, 255, 0.1)",
+                        backgroundColor: "transparent",
                       }}
                     >
                       OPEN SPOTIFY
@@ -487,7 +483,7 @@ export default async function HomePage() {
             }}
           >
             <div>
-              <span className="editorial-badge">// ON THE ROAD (MONGODB)</span>
+              <span className="editorial-badge">// ON THE ROAD</span>
               <h2 className="section-title">UPCOMING PERFORMANCES</h2>
             </div>
             <Link href="/events" className="btn-outline-red">
@@ -497,7 +493,11 @@ export default async function HomePage() {
 
           {upcomingEvents.length > 0 ? (
             <div
-              style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.5rem",
+              }}
             >
               {upcomingEvents.map((event) => (
                 <EventCard key={event._id} event={event} />
@@ -512,7 +512,13 @@ export default async function HomePage() {
                 backgroundColor: "rgba(255, 255, 255, 0.01)",
               }}
             >
-              <p style={{ color: "var(--text-muted)", fontSize: "1rem", margin: 0 }}>
+              <p
+                style={{
+                  color: "var(--text-muted)",
+                  fontSize: "1rem",
+                  margin: 0,
+                }}
+              >
                 No data available
               </p>
             </div>
@@ -635,7 +641,13 @@ export default async function HomePage() {
                 backgroundColor: "rgba(255, 255, 255, 0.01)",
               }}
             >
-              <p style={{ color: "var(--text-muted)", fontSize: "1rem", margin: 0 }}>
+              <p
+                style={{
+                  color: "var(--text-muted)",
+                  fontSize: "1rem",
+                  margin: 0,
+                }}
+              >
                 No data available
               </p>
             </div>
@@ -771,7 +783,13 @@ export default async function HomePage() {
                 backgroundColor: "rgba(255, 255, 255, 0.01)",
               }}
             >
-              <p style={{ color: "var(--text-muted)", fontSize: "1rem", margin: 0 }}>
+              <p
+                style={{
+                  color: "var(--text-muted)",
+                  fontSize: "1rem",
+                  margin: 0,
+                }}
+              >
                 No data available
               </p>
             </div>
@@ -921,7 +939,13 @@ export default async function HomePage() {
                 backgroundColor: "rgba(255, 255, 255, 0.01)",
               }}
             >
-              <p style={{ color: "var(--text-muted)", fontSize: "1rem", margin: 0 }}>
+              <p
+                style={{
+                  color: "var(--text-muted)",
+                  fontSize: "1rem",
+                  margin: 0,
+                }}
+              >
                 No data available
               </p>
             </div>

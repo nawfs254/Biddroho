@@ -54,9 +54,9 @@ export default function Navbar() {
           width: '100%',
           zIndex: 100,
           transition: 'all 0.3s ease',
-          backgroundColor: scrolled ? 'rgba(5, 5, 6, 0.92)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(16px)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid transparent',
+          backgroundColor: (scrolled || mobileMenuOpen) ? 'rgba(5, 5, 6, 0.96)' : 'transparent',
+          backdropFilter: (scrolled || mobileMenuOpen) ? 'blur(16px)' : 'none',
+          borderBottom: (scrolled || mobileMenuOpen) ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid transparent',
           padding: scrolled ? '0.75rem 0' : '1.25rem 0'
         }}
       >
@@ -189,81 +189,99 @@ export default function Navbar() {
           style={{
             position: 'fixed',
             inset: 0,
+            height: '100dvh',
+            width: '100%',
             backgroundColor: '#050506',
             zIndex: 99,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            padding: '7rem 2rem 3rem',
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain',
             animation: 'fadeIn 0.25s ease forwards'
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-            <span
-              style={{
-                fontSize: '0.75rem',
-                letterSpacing: '0.25em',
-                color: 'var(--crimson-base)',
-                textTransform: 'uppercase'
-              }}
-            >
-              // NAVIGATION
-            </span>
-            {NAV_LINKS.map((link, idx) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="font-display"
-                onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  fontSize: '2.5rem',
-                  letterSpacing: '0.08em',
-                  color: pathname === link.href ? 'var(--crimson-base)' : '#ffffff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  textDecoration: 'none'
-                }}
-              >
-                <span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }}>
-                  0{idx + 1}
-                </span>
-                {link.name}
-              </Link>
-            ))}
-
-            <Link
-              href="/book"
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn-primary"
-              style={{
-                marginTop: '1rem',
-                fontSize: '1.25rem',
-                textAlign: 'center',
-                padding: '1.1rem 2rem'
-              }}
-            >
-              BOOK BIDDROHO
-            </Link>
-          </div>
-
-          {/* Mobile Menu Footer */}
           <div
             style={{
-              borderTop: '1px solid var(--border-subtle)',
-              paddingTop: '2rem',
+              minHeight: '100%',
               display: 'flex',
+              flexDirection: 'column',
               justifyContent: 'space-between',
-              alignItems: 'center'
+              padding: '6.5rem 1.75rem calc(2.5rem + env(safe-area-inset-bottom, 24px))',
+              gap: '2rem'
             }}
           >
-            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-              DHAKA, BANGLADESH
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  letterSpacing: '0.25em',
+                  color: 'var(--crimson-base)',
+                  textTransform: 'uppercase'
+                }}
+              >
+                // NAVIGATION
+              </span>
+              {NAV_LINKS.map((link, idx) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className="font-display"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    fontSize: 'clamp(1.85rem, 5.5vw, 2.25rem)',
+                    letterSpacing: '0.08em',
+                    color: pathname === link.href ? 'var(--crimson-base)' : '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '1rem',
+                    textDecoration: 'none'
+                  }}
+                >
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }}>
+                    0{idx + 1}
+                  </span>
+                  {link.name}
+                </Link>
+              ))}
+
+              <Link
+                href="/book"
+                onClick={() => setMobileMenuOpen(false)}
+                className="btn-primary"
+                style={{
+                  marginTop: '0.75rem',
+                  fontSize: '1.15rem',
+                  textAlign: 'center',
+                  padding: '1rem 1.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%'
+                }}
+              >
+                BOOK BIDDROHO
+              </Link>
             </div>
-            <div style={{ display: 'flex', gap: '1.25rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-              <span>SPOTIFY</span>
-              <span>YOUTUBE</span>
-              <span>FACEBOOK</span>
+
+            {/* Mobile Menu Footer */}
+            <div
+              style={{
+                borderTop: '1px solid var(--border-subtle)',
+                paddingTop: '1.5rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '0.75rem'
+              }}
+            >
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                DHAKA, BANGLADESH
+              </div>
+              <div style={{ display: 'flex', gap: '1.25rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                <span>SPOTIFY</span>
+                <span>YOUTUBE</span>
+                <span>FACEBOOK</span>
+              </div>
             </div>
           </div>
         </div>
