@@ -55,6 +55,14 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true
+  },
+  icons: {
+    icon: [
+      { url: '/assets/logo.png', type: 'image/png' },
+      { url: '/icon.png', type: 'image/png' }
+    ],
+    shortcut: '/assets/logo.png',
+    apple: '/assets/logo.png'
   }
 };
 

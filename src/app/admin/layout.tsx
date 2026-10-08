@@ -8,6 +8,11 @@ export const metadata = {
   title: 'BIDDROHO CMS & CRM Portal',
   description: 'Administration and operations portal for heavy rock band BIDDROHO.',
   robots: { index: false, follow: false },
+  icons: {
+    icon: '/assets/logo.png',
+    shortcut: '/assets/logo.png',
+    apple: '/assets/logo.png'
+  }
 };
 
 export default async function AdminLayout({
