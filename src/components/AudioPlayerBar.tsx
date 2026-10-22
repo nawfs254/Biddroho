@@ -102,7 +102,12 @@ export default function AudioPlayerBar() {
             letterSpacing: '0.12em',
             textTransform: 'uppercase'
           }}
-          aria-label={isCollapsed ? 'Expand Player' : 'Collapse Player'}
+          aria-expanded={!isCollapsed}
+          aria-label={
+            isCollapsed
+              ? 'Music Streaming Player • Coming Soon'
+              : 'Minimize Player'
+          }
         >
           {isCollapsed ? (
             <>

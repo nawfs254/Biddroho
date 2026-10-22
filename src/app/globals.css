@@ -174,14 +174,14 @@ a {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: var(--crimson-base);
+  background: #cc0010;
   color: #ffffff;
   font-family: var(--font-display);
   font-size: 1.15rem;
   letter-spacing: 0.1em;
   padding: 0.85rem 2rem;
   text-transform: uppercase;
-  border: 1px solid var(--crimson-base);
+  border: 1px solid #cc0010;
   cursor: pointer;
   position: relative;
   overflow: hidden;

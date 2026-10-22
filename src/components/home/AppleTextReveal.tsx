@@ -13,9 +13,9 @@ interface WordProps {
 }
 
 function Word({ word, range, progress, isAccent }: WordProps) {
-  const opacity = useTransform(progress, range, [0.7, 1]);
+  const opacity = useTransform(progress, range, [isAccent ? 0.95 : 0.75, 1]);
   const color = useTransform(progress, range, [
-    isAccent ? "rgba(255, 82, 88, 0.85)" : "rgba(228, 228, 231, 0.78)",
+    isAccent ? "#ff757b" : "rgba(228, 228, 231, 0.82)",
     isAccent ? "#ff333a" : "#ffffff",
   ]);
   const textShadow = useTransform(progress, range, [
