@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "node --env-file=.env.local src/scripts/full-site-audit.mjs",
+    "audit": "node --env-file=.env.local src/scripts/full-site-audit.mjs"
   },
   "keywords": [],
   "author": "",
