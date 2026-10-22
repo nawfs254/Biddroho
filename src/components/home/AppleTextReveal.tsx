@@ -13,14 +13,14 @@ interface WordProps {
 }
 
 function Word({ word, range, progress, isAccent }: WordProps) {
-  const opacity = useTransform(progress, range, [0.35, 1]);
+  const opacity = useTransform(progress, range, [0.7, 1]);
   const color = useTransform(progress, range, [
-    isAccent ? "rgba(229, 9, 20, 0.45)" : "rgba(255, 255, 255, 0.32)",
-    isAccent ? "#ff1e27" : "#ffffff",
+    isAccent ? "rgba(255, 82, 88, 0.85)" : "rgba(228, 228, 231, 0.78)",
+    isAccent ? "#ff333a" : "#ffffff",
   ]);
   const textShadow = useTransform(progress, range, [
     "0 0 0px transparent",
-    isAccent ? "0 0 20px rgba(229, 9, 20, 0.8)" : "0 0 15px rgba(255, 255, 255, 0.45)",
+    isAccent ? "0 0 24px rgba(255, 51, 58, 0.85)" : "0 0 18px rgba(255, 255, 255, 0.55)",
   ]);
 
   const scale = useTransform(progress, range, [0.97, 1.03]);

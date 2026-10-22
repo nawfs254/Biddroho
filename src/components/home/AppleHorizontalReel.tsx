@@ -70,8 +70,8 @@ function Architect3DCard({
 
   const opacity = useTransform(activeProgress, (val: number) => {
     const diff = Math.abs(index - val);
-    if (diff > 2.6) return 0;
-    return Math.max(0, 1 - diff * 0.36);
+    if (diff > 2.8) return 0;
+    return Math.max(0.68, 1 - diff * 0.14);
   });
 
   const zIndex = useTransform(activeProgress, (val: number) => {
@@ -198,7 +198,7 @@ function Architect3DCard({
               padding: '0.2rem 0.6rem',
               fontFamily: 'var(--font-display)',
               fontSize: '0.7rem',
-              color: isActive ? 'var(--crimson-base)' : 'var(--text-muted)',
+              color: isActive ? 'var(--crimson-base)' : 'var(--text-secondary)',
               letterSpacing: '0.12em',
               borderRadius: '4px',
             }}
@@ -229,7 +229,7 @@ function Architect3DCard({
             >
               <span
                 style={{
-                  color: 'var(--text-muted)',
+                  color: 'var(--text-secondary)',
                   fontSize: isMobile ? '0.65rem' : '0.72rem',
                   fontWeight: 600,
                   textTransform: 'uppercase',

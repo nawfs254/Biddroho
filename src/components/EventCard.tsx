@@ -70,8 +70,9 @@ export default function EventCard({ event }: EventCardProps) {
           </span>
           <span
             style={{
-              fontSize: '0.7rem',
-              color: 'var(--text-muted)'
+              fontSize: '0.72rem',
+              color: 'var(--text-secondary)',
+              fontWeight: 500
             }}
           >
             {year}
@@ -154,12 +155,13 @@ export default function EventCard({ event }: EventCardProps) {
               style={{
                 display: 'inline-block',
                 padding: '0.35rem 0.85rem',
-                background: 'rgba(255, 255, 255, 0.05)',
-                color: 'var(--text-muted)',
-                border: '1px solid var(--border-subtle)',
+                background: 'rgba(255, 255, 255, 0.08)',
+                color: 'var(--text-secondary)',
+                border: '1px solid var(--border-medium)',
                 fontSize: '0.75rem',
                 letterSpacing: '0.12em',
-                fontFamily: 'var(--font-display)'
+                fontFamily: 'var(--font-display)',
+                fontWeight: 600
               }}
             >
               SOLD OUT
@@ -201,12 +203,13 @@ export default function EventCard({ event }: EventCardProps) {
               style={{
                 display: 'inline-block',
                 padding: '0.35rem 0.85rem',
-                background: 'rgba(255, 255, 255, 0.03)',
-                color: 'var(--text-muted)',
-                border: '1px solid var(--border-subtle)',
+                background: 'rgba(255, 255, 255, 0.06)',
+                color: 'var(--text-secondary)',
+                border: '1px solid var(--border-medium)',
                 fontSize: '0.75rem',
                 letterSpacing: '0.12em',
-                fontFamily: 'var(--font-display)'
+                fontFamily: 'var(--font-display)',
+                fontWeight: 600
               }}
             >
               CONCLUDED
