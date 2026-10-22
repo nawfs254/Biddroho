@@ -1,8 +1,30 @@
 import type { Metadata } from 'next';
+import { Bebas_Neue, Plus_Jakarta_Sans, Syne } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AudioPlayerBar from '@/components/AudioPlayerBar';
+
+const bebasNeue = Bebas_Neue({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-bebas-neue',
+  display: 'swap',
+});
+
+const syne = Syne({
+  weight: ['600', '700', '800'],
+  subsets: ['latin'],
+  variable: '--font-syne',
+  display: 'swap',
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin'],
+  variable: '--font-plus-jakarta-sans',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://biddroho.com'),
@@ -83,7 +105,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head />
-      <body style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <body className={`${bebasNeue.variable} ${syne.variable} ${plusJakartaSans.variable}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         {isConnected ? (
           <AppShell>{children}</AppShell>
         ) : (
