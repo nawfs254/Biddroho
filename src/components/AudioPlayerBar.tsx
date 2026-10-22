@@ -66,7 +66,8 @@ export default function AudioPlayerBar() {
   };
 
   return (
-    <div
+    <aside
+      aria-label="Official Music Player"
       style={{
         position: 'fixed',
         bottom: 0,
@@ -371,9 +372,9 @@ export default function AudioPlayerBar() {
                     fontSize: '0.62rem',
                     fontWeight: 800,
                     letterSpacing: '0.14em',
-                    color: '#e11d48',
-                    backgroundColor: 'rgba(225, 29, 72, 0.12)',
-                    border: '1px solid rgba(225, 29, 72, 0.35)',
+                    color: '#fb7185',
+                    backgroundColor: 'rgba(225, 29, 72, 0.2)',
+                    border: '1px solid rgba(251, 113, 133, 0.45)',
                     padding: '2px 8px',
                     borderRadius: '2px',
                     textTransform: 'uppercase'
@@ -382,7 +383,7 @@ export default function AudioPlayerBar() {
                   WE WILL BRING SOON
                 </span>
               </div>
-              <p style={{ margin: '3px 0 0 0', fontSize: '0.74rem', color: '#a1a1aa' }}>
+              <p style={{ margin: '3px 0 0 0', fontSize: '0.74rem', color: '#d4d4d8' }}>
                 High-fidelity audio streaming is currently in production. Listen to BIDDROHO on official platforms:
               </p>
             </div>
@@ -441,6 +442,6 @@ export default function AudioPlayerBar() {
           }
         }
       `}</style>
-    </div>
+    </aside>
   );
 }

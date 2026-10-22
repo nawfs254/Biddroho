@@ -89,9 +89,9 @@ export default function ContactPage() {
                   padding: '2rem'
                 }}
               >
-                <h3 className="font-display" style={{ fontSize: '1.4rem', color: '#fff', marginBottom: '1.25rem', letterSpacing: '0.05em' }}>
+                <h2 className="font-display" style={{ fontSize: '1.4rem', color: '#fff', marginBottom: '1.25rem', letterSpacing: '0.05em' }}>
                   MANAGEMENT DESK
-                </h3>
+                </h2>
                 <p style={{ color: '#a1a1aa', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1.75rem' }}>
                   Our management team reviews inbound communications daily. For stadium concerts, college tours, and festival contracts, please use our dedicated concert booking portal.
                 </p>
@@ -113,7 +113,7 @@ export default function ContactPage() {
                       <Mail size={18} />
                     </div>
                     <div>
-                      <div style={{ fontSize: '0.75rem', color: '#71717a', textTransform: 'uppercase', fontWeight: 600 }}>Official Email</div>
+                      <div style={{ fontSize: '0.75rem', color: '#a1a1aa', textTransform: 'uppercase', fontWeight: 600 }}>Official Email</div>
                       <a href="mailto:booking@biddroho.com" style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 600 }}>
                         booking@biddroho.com
                       </a>
@@ -136,7 +136,7 @@ export default function ContactPage() {
                       <MapPin size={18} />
                     </div>
                     <div>
-                      <div style={{ fontSize: '0.75rem', color: '#71717a', textTransform: 'uppercase', fontWeight: 600 }}>Headquarters & Studio</div>
+                      <div style={{ fontSize: '0.75rem', color: '#a1a1aa', textTransform: 'uppercase', fontWeight: 600 }}>Headquarters & Studio</div>
                       <div style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 600 }}>
                         Dhaka, Bangladesh
                       </div>
@@ -178,7 +178,7 @@ export default function ContactPage() {
               <h2 className="font-display" style={{ fontSize: '1.75rem', color: '#fff', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>
                 SEND A MESSAGE
               </h2>
-              <p style={{ color: '#71717a', fontSize: '0.9rem', marginBottom: '2rem' }}>
+              <p style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '2rem' }}>
                 Inbound messages are routed directly to the band CRM portal.
               </p>
 

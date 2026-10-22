@@ -45,7 +45,7 @@ export default function BookPage() {
             <div className="dark-card" style={{ padding: '1.75rem', border: '1px solid var(--border-subtle)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
                 <Headphones size={22} color="var(--crimson-base)" />
-                <h3 className="font-display" style={{ fontSize: '1.35rem', color: '#fff' }}>FULL 6-PIECE LINEUP</h3>
+                <h2 className="font-display" style={{ fontSize: '1.35rem', color: '#fff' }}>FULL 6-PIECE LINEUP</h2>
               </div>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6 }}>
                 Every live appearance features the complete official band lineup (Vocals, Dual Guitars, Bass, Keys/Synths, Drums) accompanied by our dedicated front-of-house sound engineer.
@@ -55,7 +55,7 @@ export default function BookPage() {
             <div className="dark-card" style={{ padding: '1.75rem', border: '1px solid var(--border-subtle)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
                 <Calendar size={22} color="var(--crimson-base)" />
-                <h3 className="font-display" style={{ fontSize: '1.35rem', color: '#fff' }}>ROUTING & LEAD TIME</h3>
+                <h2 className="font-display" style={{ fontSize: '1.35rem', color: '#fff' }}>ROUTING & LEAD TIME</h2>
               </div>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6 }}>
                 Due to national tour commitments and studio recording schedules, we advise submitting inquiries at least 30 to 60 days in advance of the scheduled performance date.
@@ -65,7 +65,7 @@ export default function BookPage() {
             <div className="dark-card" style={{ padding: '1.75rem', border: '1px solid var(--border-subtle)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
                 <ShieldCheck size={22} color="var(--crimson-base)" />
-                <h3 className="font-display" style={{ fontSize: '1.35rem', color: '#fff' }}>DIRECT MANAGEMENT</h3>
+                <h2 className="font-display" style={{ fontSize: '1.35rem', color: '#fff' }}>DIRECT MANAGEMENT</h2>
               </div>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6 }}>
                 All bookings are handled strictly through official representation. No unauthorized intermediaries or third-party brokers have permission to confirm BIDDROHO dates.

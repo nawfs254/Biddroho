@@ -32,9 +32,9 @@ export default function NewsClientView({ initialNews }: NewsClientViewProps) {
             key={cat}
             onClick={() => setSelectedCategory(cat)}
             style={{
-              background: selectedCategory === cat ? 'var(--crimson-base)' : 'rgba(20, 20, 24, 0.8)',
+              background: selectedCategory === cat ? '#b91c1c' : 'rgba(20, 20, 24, 0.8)',
               color: selectedCategory === cat ? '#ffffff' : 'var(--text-secondary)',
-              border: selectedCategory === cat ? '1px solid var(--crimson-base)' : '1px solid var(--border-subtle)',
+              border: selectedCategory === cat ? '1px solid #ef4444' : '1px solid var(--border-subtle)',
               padding: '0.6rem 1.4rem',
               fontFamily: 'var(--font-display)',
               fontSize: '0.95rem',
@@ -77,7 +77,7 @@ export default function NewsClientView({ initialNews }: NewsClientViewProps) {
                     position: 'absolute',
                     top: '1rem',
                     left: '1rem',
-                    background: 'var(--crimson-base)',
+                    background: '#b91c1c',
                     color: '#fff',
                     padding: '0.25rem 0.75rem',
                     fontFamily: 'var(--font-display)',

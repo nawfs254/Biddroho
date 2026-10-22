@@ -118,7 +118,7 @@ export default async function MusicPage() {
                 >
                   <span
                     style={{
-                      backgroundColor: "var(--crimson-base)",
+                      backgroundColor: "#b91c1c",
                       color: "#fff",
                       padding: "0.2rem 0.75rem",
                       fontFamily: "var(--font-display)",

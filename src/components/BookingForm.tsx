@@ -207,10 +207,11 @@ export default function BookingForm() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_name" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Full Name *
             </label>
             <input
+              id="booking_name"
               type="text"
               name="name"
               placeholder="e.g. Tanvir Ahmed"
@@ -222,10 +223,11 @@ export default function BookingForm() {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_email" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Email Address *
             </label>
             <input
+              id="booking_email"
               type="email"
               name="email"
               placeholder="e.g. tanvir@eventmanagement.com"
@@ -237,10 +239,11 @@ export default function BookingForm() {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_phone" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Phone Number *
             </label>
             <input
+              id="booking_phone"
               type="tel"
               name="phone"
               placeholder="e.g. +880 1700-000000"
@@ -252,10 +255,11 @@ export default function BookingForm() {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_organization" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Organization / University / Agency
             </label>
             <input
+              id="booking_organization"
               type="text"
               name="organization"
               placeholder="e.g. BUET Cultural Club / Live Nation BD"
@@ -278,10 +282,12 @@ export default function BookingForm() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_eventDate" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Proposed Event Date *
             </label>
             <input
+              id="booking_eventDate"
+              aria-label="Proposed Event Date"
               type="date"
               name="eventDate"
               value={formData.eventDate}
@@ -292,10 +298,12 @@ export default function BookingForm() {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_eventType" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Event Type *
             </label>
             <select
+              id="booking_eventType"
+              aria-label="Event Type"
               name="eventType"
               value={formData.eventType}
               onChange={handleChange}
@@ -313,10 +321,11 @@ export default function BookingForm() {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_venue" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Venue / Stadium / Ground *
             </label>
             <input
+              id="booking_venue"
               type="text"
               name="venue"
               placeholder="e.g. Army Stadium / ICCB Hall 2 / Campus Field"
@@ -328,10 +337,11 @@ export default function BookingForm() {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_city" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               City & District *
             </label>
             <input
+              id="booking_city"
               type="text"
               name="city"
               placeholder="e.g. Dhaka, Chittagong, Sylhet"
@@ -355,10 +365,12 @@ export default function BookingForm() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_expectedAudience" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Expected Audience Size *
             </label>
             <select
+              id="booking_expectedAudience"
+              aria-label="Expected Audience Size"
               name="expectedAudience"
               value={formData.expectedAudience}
               onChange={handleChange}
@@ -375,10 +387,12 @@ export default function BookingForm() {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_venueSetting" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Venue Environment *
             </label>
             <select
+              id="booking_venueSetting"
+              aria-label="Venue Environment"
               name="venueSetting"
               value={formData.venueSetting}
               onChange={handleChange}
@@ -393,10 +407,12 @@ export default function BookingForm() {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_eventNature" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Ticketing Nature *
             </label>
             <select
+              id="booking_eventNature"
+              aria-label="Ticketing Nature"
               name="eventNature"
               value={formData.eventNature}
               onChange={handleChange}
@@ -412,10 +428,11 @@ export default function BookingForm() {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_otherArtists" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Other Co-Artists / Bands on Bill
             </label>
             <input
+              id="booking_otherArtists"
               type="text"
               name="otherArtists"
               placeholder="e.g. Nemesis, Cryptic Fate, Opening acts"
@@ -426,10 +443,11 @@ export default function BookingForm() {
           </div>
 
           <div style={{ gridColumn: '1 / -1' }}>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_sponsors" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Sponsors / Brand Partners Involved
             </label>
             <input
+              id="booking_sponsors"
               type="text"
               name="sponsors"
               placeholder="e.g. Beverage sponsor, telecom partner, media broadcaster"
@@ -440,10 +458,11 @@ export default function BookingForm() {
           </div>
 
           <div style={{ gridColumn: '1 / -1' }}>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+            <label htmlFor="booking_additionalInfo" style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
               Additional Information / Technical Rider Notes
             </label>
             <textarea
+              id="booking_additionalInfo"
               name="additionalInfo"
               rows={4}
               placeholder="Include set duration expectations, security provisions, sound provider details, stage dimensions, or special requests..."

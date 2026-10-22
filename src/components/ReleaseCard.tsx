@@ -99,6 +99,7 @@ export default function ReleaseCard({ release, featured = false }: ReleaseCardPr
             transition: 'opacity 0.3s ease'
           }}
           className="overlay-play"
+          aria-label={`Listen to ${release.title}`}
         >
           <div
             style={{

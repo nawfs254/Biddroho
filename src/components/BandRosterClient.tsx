@@ -174,7 +174,7 @@ export default function BandRosterClient({ members }: BandRosterClientProps) {
                     padding: '0.15rem 0.35rem',
                     fontFamily: 'var(--font-display)',
                     fontSize: '0.65rem',
-                    color: 'var(--crimson-base)',
+                    color: '#ff6b72',
                     letterSpacing: '0.08em',
                     borderRadius: '3px',
                   }}
@@ -204,7 +204,7 @@ export default function BandRosterClient({ members }: BandRosterClientProps) {
                 >
                   <span
                     style={{
-                      color: 'var(--crimson-base)',
+                      color: '#ff6b72',
                       fontFamily: 'var(--font-display)',
                       fontSize: '0.72rem',
                       letterSpacing: '0.12em',
@@ -346,10 +346,9 @@ export default function BandRosterClient({ members }: BandRosterClientProps) {
                       alignItems: 'center',
                       gap: '0.25rem',
                       fontSize: '0.7rem',
-                      color: 'var(--crimson-base)',
+                      color: '#ff6b72',
                       fontFamily: 'var(--font-display)',
                       letterSpacing: '0.08em',
-                      opacity: 0.85,
                     }}
                   >
                     EXPAND <Maximize2 size={11} />

@@ -71,7 +71,7 @@ function Architect3DCard({
   const opacity = useTransform(activeProgress, (val: number) => {
     const diff = Math.abs(index - val);
     if (diff > 2.8) return 0;
-    return Math.max(0.68, 1 - diff * 0.14);
+    return Math.max(0.85, 1 - diff * 0.08);
   });
 
   const zIndex = useTransform(activeProgress, (val: number) => {
@@ -240,7 +240,7 @@ function Architect3DCard({
               </span>
               <span
                 style={{
-                  color: 'var(--crimson-base)',
+                  color: '#ff6b72',
                   fontSize: isMobile ? '0.62rem' : '0.68rem',
                   fontFamily: 'var(--font-display)',
                   letterSpacing: '0.1em',
@@ -321,7 +321,7 @@ function Architect3DCard({
             <span
               style={{
                 fontSize: '0.68rem',
-                color: 'var(--text-muted)',
+                color: 'var(--text-secondary)',
                 fontFamily: 'var(--font-display)',
                 letterSpacing: '0.08em',
               }}
@@ -671,13 +671,14 @@ export default function AppleHorizontalReel({ members }: AppleHorizontalReelProp
                   <button
                     key={member.id || idx}
                     onClick={() => scrollToMember(idx)}
+                    aria-label={`Select band member ${member.name}`}
                     style={{
-                      backgroundColor: isSelected ? 'var(--crimson-base)' : 'rgba(20, 20, 26, 0.75)',
+                      backgroundColor: isSelected ? '#b91c1c' : 'rgba(20, 20, 26, 0.85)',
                       color: isSelected ? '#ffffff' : 'var(--text-secondary)',
                       border: isSelected
-                        ? '1px solid var(--crimson-hover)'
-                        : '1px solid rgba(255, 255, 255, 0.08)',
-                      boxShadow: isSelected ? '0 0 15px var(--crimson-glow)' : 'none',
+                        ? '1px solid #ef4444'
+                        : '1px solid rgba(255, 255, 255, 0.12)',
+                      boxShadow: isSelected ? '0 0 15px rgba(239, 68, 68, 0.4)' : 'none',
                       padding: '0.35rem 0.75rem',
                       borderRadius: '999px',
                       fontFamily: 'var(--font-display)',
@@ -690,7 +691,7 @@ export default function AppleHorizontalReel({ members }: AppleHorizontalReelProp
                       gap: '0.35rem',
                     }}
                   >
-                    <span style={{ opacity: isSelected ? 1 : 0.6 }}>0{idx + 1}</span>
+                    <span style={{ opacity: isSelected ? 1 : 0.85 }}>0{idx + 1}</span>
                     <span>{firstName.toUpperCase()}</span>
                   </button>
                 );
