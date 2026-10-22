@@ -73,6 +73,7 @@ export interface BookingDocument {
   retainedAmount?: string | number;
   cancellationReason?: string;
   internalNotes?: BookingNote[];
+  clientIp?: string;
   createdAt: string | Date;
   updatedAt?: string | Date;
 }

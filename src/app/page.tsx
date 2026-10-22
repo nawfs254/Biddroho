@@ -21,7 +21,9 @@ import {
 } from "@/lib/dataService";
 import ReleaseCard from "@/components/ReleaseCard";
 import EventCard from "@/components/EventCard";
-
+import AppleHeroScroller from "@/components/home/AppleHeroScroller";
+import AppleTextReveal from "@/components/home/AppleTextReveal";
+import AppleHorizontalReel from "@/components/home/AppleHorizontalReel";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -34,7 +36,7 @@ export default async function HomePage() {
     getNews(),
   ]);
 
-  const latestRelease = releases[0];
+  const latestRelease = (releases && releases.length > 0) ? releases[0] : null;
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
@@ -45,431 +47,21 @@ export default async function HomePage() {
     return new Date(e.date) >= today;
   };
 
-  const upcomingEvents = events.filter(isUpcoming).slice(0, 2);
+  const upcomingEvents = events.filter(isUpcoming);
+  const displayEvents = upcomingEvents.length > 0 ? upcomingEvents.slice(0, 2) : events.slice(0, 2);
+  const isShowingUpcoming = upcomingEvents.length > 0;
   const featuredMedia = mediaItems.slice(0, 4);
   const latestNews = newsItems.slice(0, 3);
 
   return (
     <div>
-      {/* 1. CINEMATIC HERO SECTION (Full Viewport) */}
-      <section
-        style={{
-          position: "relative",
-          minHeight: "calc(100vh - 80px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-          backgroundColor: "#050506",
-        }}
-      >
-        {/* Hero Background Image with Atmospheric Layers */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
-          <Image
-            src="/assets/hero_live.jpg"
-            alt="BIDDROHO Performing Live in Stadium"
-            fill
-            priority
-            style={{
-              objectFit: "cover",
-              objectPosition: "center 40%",
-              filter: "brightness(0.42) contrast(1.15)",
-            }}
-          />
+      {/* 1 & 2. APPLE-STYLE SCROLLYTELLING HERO & ALBUM MORPH */}
+      <AppleHeroScroller latestRelease={latestRelease} />
 
-          {/* Gradients to blend smoothly into page */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(180deg, rgba(5,5,6,0.7) 0%, rgba(5,5,6,0.2) 40%, rgba(5,5,6,0.95) 90%, #050506 100%)",
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "radial-gradient(circle at center, transparent 30%, rgba(5,5,6,0.85) 90%)",
-            }}
-          />
-        </div>
+      {/* 3. APPLE-STYLE MANIFESTO & SOUND SPECS REVEAL */}
+      <AppleTextReveal />
 
-        {/* Ambient Crimson Glow Pulse */}
-        <div
-          style={{
-            position: "absolute",
-            top: "35%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "650px",
-            height: "400px",
-            background:
-              "radial-gradient(circle, rgba(229, 9, 20, 0.22) 0%, transparent 70%)",
-            filter: "blur(80px)",
-            pointerEvents: "none",
-            zIndex: 1,
-          }}
-        />
-
-        {/* Hero Content */}
-        <div
-          className="site-container"
-          style={{
-            position: "relative",
-            zIndex: 2,
-            textAlign: "center",
-            paddingTop: "2rem",
-            paddingBottom: "3rem",
-            maxWidth: "1000px",
-          }}
-        >
-          {/* Official Emblem / Subtitle */}
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.85rem",
-              marginBottom: "1.25rem",
-              backgroundColor: "rgba(5, 5, 6, 0.75)",
-              border: "1px solid var(--border-subtle)",
-              padding: "0.4rem 1.25rem",
-            }}
-          >
-            <div
-              style={{ position: "relative", width: "22px", height: "22px" }}
-            >
-              <Image
-                src="/assets/logo.png"
-                alt="BIDDROHO Symbol"
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </div>
-            <span
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "0.9rem",
-                letterSpacing: "0.22em",
-                color: "var(--crimson-base)",
-              }}
-            >
-              ESTABLISHED 2011 • BANGLADESHI ROCK BAND
-            </span>
-          </div>
-
-          {/* Large BIDDROHO Typography */}
-          <h1
-            className="font-display"
-            style={{
-              fontSize: "clamp(4rem, 14vw, 10.5rem)",
-              lineHeight: 0.88,
-              letterSpacing: "0.04em",
-              color: "#ffffff",
-              textShadow:
-                "0 0 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(229, 9, 20, 0.25)",
-              marginBottom: "1.5rem",
-              textTransform: "uppercase",
-            }}
-          >
-            BIDDROHO
-          </h1>
-
-          {/* Short Brand Statement */}
-          <p
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontSize: "clamp(1.1rem, 2.5vw, 1.45rem)",
-              fontWeight: 600,
-              letterSpacing: "0.04em",
-              color: "#e4e4e7",
-              maxWidth: "680px",
-              margin: "0 auto 2.5rem",
-              // lineHeight: 1.5,
-            }}
-          >
-            Six Souls, One Sound, Pure Energy !!!
-          </p>
-
-          {/* Call to Actions */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1.25rem",
-              flexWrap: "wrap",
-            }}
-          >
-            <Link
-              href="/music"
-              className="btn-primary"
-              style={{
-                fontSize: "1.2rem",
-                padding: "1rem 2.5rem",
-              }}
-            >
-              <Play size={18} fill="#fff" /> LISTEN NOW
-            </Link>
-
-            <Link
-              href="/events"
-              className="btn-secondary"
-              style={{
-                fontSize: "1.2rem",
-                padding: "1rem 2.5rem",
-              }}
-            >
-              <Calendar size={18} /> UPCOMING SHOWS
-            </Link>
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "1.5rem",
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "0.35rem",
-            color: "var(--text-muted)",
-            fontSize: "0.75rem",
-            letterSpacing: "0.2em",
-            fontFamily: "var(--font-display)",
-            zIndex: 2,
-          }}
-        >
-          <span>SCROLL DOWN</span>
-          <div
-            style={{
-              width: "1px",
-              height: "24px",
-              backgroundColor: "var(--crimson-base)",
-            }}
-          />
-        </div>
-      </section>
-
-      {/* 2. LATEST RELEASE SECTION */}
-      {latestRelease && (
-        <section
-          className="section-py"
-          style={{
-            backgroundColor: "#070709",
-            borderTop: "1px solid var(--border-subtle)",
-          }}
-        >
-          <div className="site-container">
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
-                marginBottom: "3rem",
-                flexWrap: "wrap",
-                gap: "1.5rem",
-              }}
-            >
-              <div>
-                <span className="editorial-badge">// NEW RELEASE</span>
-                <h2 className="section-title">THE LATEST RECORD</h2>
-              </div>
-              <Link href="/music" className="btn-outline-red">
-                VIEW DISCOGRAPHY <ChevronRight size={16} />
-              </Link>
-            </div>
-
-            {/* Featured Release Highlight Grid */}
-            <div
-              className="dark-card"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "3rem",
-                padding: "clamp(1.5rem, 4vw, 3.5rem)",
-                border: "1px solid var(--border-subtle)",
-                alignItems: "center",
-              }}
-            >
-              {/* Album Artwork */}
-              <div
-                style={{
-                  position: "relative",
-                  maxWidth: "440px",
-                  margin: "0 auto",
-                  width: "100%",
-                }}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    aspectRatio: "1/1",
-                    boxShadow:
-                      "0 20px 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(229, 9, 20, 0.2)",
-                    border: "1px solid var(--border-subtle)",
-                  }}
-                >
-                  <Image
-                    src={latestRelease.coverImage}
-                    alt={latestRelease.title}
-                    fill
-                    style={{ objectFit: "cover" }}
-                  />
-                </div>
-              </div>
-
-              {/* Album Details */}
-              <div>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "0.75rem",
-                    marginBottom: "1rem",
-                    alignItems: "center",
-                  }}
-                >
-                  <span
-                    style={{
-                      backgroundColor: "var(--crimson-subtle)",
-                      color: "var(--crimson-base)",
-                      border: "1px solid var(--border-red)",
-                      padding: "0.2rem 0.65rem",
-                      fontFamily: "var(--font-display)",
-                      fontSize: "0.8rem",
-                      letterSpacing: "0.12em",
-                    }}
-                  >
-                    {latestRelease.type.toUpperCase()}
-                  </span>
-                  <span
-                    style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}
-                  >
-                    RELEASED {latestRelease.releaseDate}
-                  </span>
-                </div>
-
-                <h3
-                  className="font-display"
-                  style={{
-                    fontSize: "clamp(2.4rem, 4vw, 3.8rem)",
-                    color: "#fff",
-                    lineHeight: 1,
-                    marginBottom: "1rem",
-                  }}
-                >
-                  {latestRelease.title}
-                </h3>
-
-                <p
-                  style={{
-                    color: "var(--text-secondary)",
-                    fontSize: "1rem",
-                    lineHeight: 1.7,
-                    marginBottom: "2rem",
-                  }}
-                >
-                  {latestRelease.fullDescription}
-                </p>
-
-                {/* Top Track previews */}
-                {latestRelease.tracks && latestRelease.tracks.length > 0 && (
-                  <div style={{ marginBottom: "2rem" }}>
-                    <div
-                      style={{
-                        fontSize: "0.8rem",
-                        letterSpacing: "0.15em",
-                        color: "var(--text-muted)",
-                        marginBottom: "0.75rem",
-                        fontFamily: "var(--font-display)",
-                      }}
-                    >
-                      FEATURED ANTHEMS
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "0.5rem",
-                      }}
-                    >
-                      {latestRelease.tracks.slice(0, 3).map((track) => (
-                        <div
-                          key={track.number}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            padding: "0.6rem 0.85rem",
-                            background: "rgba(255, 255, 255, 0.02)",
-                            border: "1px solid var(--border-subtle)",
-                            fontSize: "0.9rem",
-                          }}
-                        >
-                          <span style={{ color: "#fff" }}>
-                            <strong
-                              style={{
-                                color: "var(--crimson-base)",
-                                marginRight: "8px",
-                              }}
-                            >
-                              0{track.number}
-                            </strong>
-                            {track.title}
-                          </span>
-                          <span style={{ color: "var(--text-muted)" }}>
-                            {track.duration}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-                  <Link
-                    href={`/music/${latestRelease.slug}`}
-                    className="btn-primary"
-                  >
-                    STREAM & TRACKLIST <ArrowRight size={16} />
-                  </Link>
-                  {latestRelease.streamingLinks?.spotify?.trim() ? (
-                    <a
-                      href={latestRelease.streamingLinks.spotify}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-secondary"
-                    >
-                      OPEN SPOTIFY
-                    </a>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled
-                      className="btn-secondary"
-                      title="Spotify link not available"
-                      style={{
-                        opacity: 0.35,
-                        cursor: "not-allowed",
-                        color: "#71717a",
-                        borderColor: "rgba(255, 255, 255, 0.1)",
-                        backgroundColor: "transparent",
-                      }}
-                    >
-                      OPEN SPOTIFY
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 3. UPCOMING EVENTS SHOWCASE */}
+      {/* 3. EVENTS SHOWCASE (REAL MONGODB EVENTS) */}
       <section className="section-py" style={{ backgroundColor: "#050506" }}>
         <div className="site-container">
           <div
@@ -483,15 +75,19 @@ export default async function HomePage() {
             }}
           >
             <div>
-              <span className="editorial-badge">// ON THE ROAD</span>
-              <h2 className="section-title">UPCOMING PERFORMANCES</h2>
+              <span className="editorial-badge">
+                {isShowingUpcoming ? "// ON THE ROAD" : "// STAGE ARCHIVE • LATEST CONCERT"}
+              </span>
+              <h2 className="section-title">
+                {isShowingUpcoming ? "UPCOMING PERFORMANCES" : "RECENT LIVE PERFORMANCE"}
+              </h2>
             </div>
             <Link href="/events" className="btn-outline-red">
               VIEW ALL DATES <ChevronRight size={16} />
             </Link>
           </div>
 
-          {upcomingEvents.length > 0 ? (
+          {displayEvents.length > 0 ? (
             <div
               style={{
                 display: "flex",
@@ -499,7 +95,7 @@ export default async function HomePage() {
                 gap: "1.5rem",
               }}
             >
-              {upcomingEvents.map((event) => (
+              {displayEvents.map((event) => (
                 <EventCard key={event._id} event={event} />
               ))}
             </div>
@@ -519,147 +115,15 @@ export default async function HomePage() {
                   margin: 0,
                 }}
               >
-                No data available
+                No upcoming dates announced yet. Check back soon.
               </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* 4. BAND INTRODUCTION (REAL OFFICIAL MEMBERS) */}
-      <section
-        className="section-py"
-        style={{
-          backgroundColor: "#08080a",
-          borderTop: "1px solid var(--border-subtle)",
-          borderBottom: "1px solid var(--border-subtle)",
-        }}
-      >
-        <div className="site-container">
-          <div
-            style={{
-              textAlign: "center",
-              maxWidth: "750px",
-              margin: "0 auto 4rem",
-            }}
-          >
-            <span
-              className="editorial-badge"
-              style={{ justifyContent: "center" }}
-            >
-              // THE OFFICIAL BAND LINEUP
-            </span>
-            <h2 className="section-title">MEET BIDDROHO</h2>
-            <p className="section-description" style={{ margin: "0 auto" }}>
-              United by sonic intensity, heavy polyrhythms, and uncompromised
-              rebellion.
-            </p>
-          </div>
-
-          {/* Member Portraits Grid */}
-          {members.length > 0 ? (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                gap: "1.5rem",
-              }}
-            >
-              {members.map((member) => (
-                <Link
-                  key={member.id}
-                  href="/band"
-                  className="dark-card-interactive"
-                  style={{
-                    textDecoration: "none",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "relative",
-                      aspectRatio: "3/4",
-                      width: "100%",
-                      overflow: "hidden",
-                      backgroundColor: "#000",
-                    }}
-                  >
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      fill
-                      sizes="(max-width: 768px) 50vw, 25vw"
-                      style={{ objectFit: "cover" }}
-                    />
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        background:
-                          "linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.85) 100%)",
-                      }}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      padding: "1.25rem",
-                      borderTop: "1px solid var(--border-subtle)",
-                    }}
-                  >
-                    <h3
-                      className="font-display"
-                      style={{
-                        fontSize: "1.35rem",
-                        color: "#fff",
-                        lineHeight: 1.1,
-                      }}
-                    >
-                      {member.name}
-                    </h3>
-                    <p
-                      style={{
-                        color: "var(--crimson-base)",
-                        fontSize: "0.75rem",
-                        letterSpacing: "0.1em",
-                        fontWeight: 600,
-                        marginTop: "4px",
-                      }}
-                    >
-                      {member.role.toUpperCase()}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "3.5rem 1.5rem",
-                border: "1px dashed var(--border-subtle)",
-                backgroundColor: "rgba(255, 255, 255, 0.01)",
-              }}
-            >
-              <p
-                style={{
-                  color: "var(--text-muted)",
-                  fontSize: "1rem",
-                  margin: 0,
-                }}
-              >
-                No data available
-              </p>
-            </div>
-          )}
-
-          <div style={{ textAlign: "center", marginTop: "3rem" }}>
-            <Link href="/band" className="btn-secondary">
-              VIEW DETAILED PROFILES & GEAR <ArrowRight size={16} />
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* 4. APPLE-STYLE HORIZONTAL MEMBER LINEUP TRACK */}
+      <AppleHorizontalReel members={members} />
 
       {/* 5. FEATURED MEDIA SNAPSHOTS */}
       <section className="section-py" style={{ backgroundColor: "#050506" }}>
@@ -825,12 +289,139 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          {latestNews.length > 0 ? (
+          {latestNews.length === 1 ? (
+            /* Single Compact Featured Card - Fits screen height cleanly */
+            <Link
+              key={latestNews[0]._id}
+              href={`/news/${latestNews[0].slug}`}
+              className="dark-card-interactive"
+              style={{
+                textDecoration: "none",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))",
+                gap: "2rem",
+                padding: "1.25rem",
+                alignItems: "center",
+                borderRadius: "14px",
+                border: "1px solid var(--border-subtle)",
+                background: "rgba(13, 13, 17, 0.75)",
+                backdropFilter: "blur(12px)",
+                maxWidth: "1080px",
+                margin: "0 auto",
+              }}
+            >
+              {/* Compact Cover Image with Top-Alignment */}
+              <div
+                style={{
+                  position: "relative",
+                  aspectRatio: "16/10",
+                  maxHeight: "280px",
+                  width: "100%",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                  backgroundColor: "#070709",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                }}
+              >
+                <Image
+                  src={latestNews[0].coverImage}
+                  alt={latestNews[0].title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 540px"
+                  style={{
+                    objectFit: "cover",
+                    objectPosition: "center top",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "0.75rem",
+                    left: "0.75rem",
+                    background: "rgba(5, 5, 6, 0.88)",
+                    backdropFilter: "blur(6px)",
+                    padding: "0.2rem 0.65rem",
+                    fontSize: "0.72rem",
+                    color: "var(--crimson-base)",
+                    border: "1px solid var(--border-subtle)",
+                    fontFamily: "var(--font-display)",
+                    letterSpacing: "0.1em",
+                    borderRadius: "4px",
+                  }}
+                >
+                  {(latestNews[0].category || "NEWS").toUpperCase()}
+                </div>
+              </div>
+
+              {/* Compact Story Details */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  padding: "0.5rem 0.5rem 0.5rem 0",
+                }}
+              >
+                <div
+                  style={{
+                    color: "var(--text-muted)",
+                    fontSize: "0.8rem",
+                    marginBottom: "0.5rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <span>{latestNews[0].date}</span>
+                  <span>•</span>
+                  <span>{latestNews[0].readTime || "3 min read"}</span>
+                </div>
+                <h3
+                  className="font-display"
+                  style={{
+                    fontSize: "clamp(1.5rem, 2.2vw, 2.1rem)",
+                    color: "#fff",
+                    lineHeight: 1.15,
+                    marginBottom: "0.6rem",
+                  }}
+                >
+                  {latestNews[0].title}
+                </h3>
+                <p
+                  style={{
+                    color: "var(--text-secondary)",
+                    fontSize: "0.88rem",
+                    lineHeight: 1.55,
+                    marginBottom: "1.25rem",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {latestNews[0].excerpt}
+                </p>
+                <span
+                  style={{
+                    color: "var(--crimson-base)",
+                    fontSize: "0.85rem",
+                    fontFamily: "var(--font-display)",
+                    letterSpacing: "0.1em",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
+                  }}
+                >
+                  READ FULL STORY ›
+                </span>
+              </div>
+            </Link>
+          ) : latestNews.length > 1 ? (
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "2rem",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
+                gap: "1.5rem",
               }}
             >
               {latestNews.map((item) => (
@@ -842,14 +433,19 @@ export default async function HomePage() {
                     textDecoration: "none",
                     display: "flex",
                     flexDirection: "column",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    border: "1px solid var(--border-subtle)",
+                    background: "rgba(13, 13, 17, 0.75)",
                   }}
                 >
                   <div
                     style={{
                       position: "relative",
                       aspectRatio: "16/9",
+                      maxHeight: "220px",
                       width: "100%",
-                      backgroundColor: "#000",
+                      backgroundColor: "#070709",
                     }}
                   >
                     <Image
@@ -857,29 +453,31 @@ export default async function HomePage() {
                       alt={item.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
-                      style={{ objectFit: "cover" }}
+                      style={{ objectFit: "cover", objectPosition: "center top" }}
                     />
                     <div
                       style={{
                         position: "absolute",
-                        top: "1rem",
-                        left: "1rem",
+                        top: "0.75rem",
+                        left: "0.75rem",
                         background: "rgba(5, 5, 6, 0.85)",
+                        backdropFilter: "blur(6px)",
                         padding: "0.2rem 0.6rem",
-                        fontSize: "0.75rem",
+                        fontSize: "0.72rem",
                         color: "var(--crimson-base)",
                         border: "1px solid var(--border-subtle)",
                         fontFamily: "var(--font-display)",
                         letterSpacing: "0.1em",
+                        borderRadius: "4px",
                       }}
                     >
-                      {item.category.toUpperCase()}
+                      {(item.category || "NEWS").toUpperCase()}
                     </div>
                   </div>
 
                   <div
                     style={{
-                      padding: "1.75rem",
+                      padding: "1.25rem",
                       display: "flex",
                       flexDirection: "column",
                       flex: "1 1 auto",
@@ -888,19 +486,19 @@ export default async function HomePage() {
                     <div
                       style={{
                         color: "var(--text-muted)",
-                        fontSize: "0.8rem",
-                        marginBottom: "0.6rem",
+                        fontSize: "0.78rem",
+                        marginBottom: "0.4rem",
                       }}
                     >
-                      {item.date} • {item.readTime}
+                      {item.date} • {item.readTime || "3 min read"}
                     </div>
                     <h3
                       className="font-display"
                       style={{
-                        fontSize: "1.65rem",
+                        fontSize: "1.4rem",
                         color: "#fff",
-                        lineHeight: 1.15,
-                        marginBottom: "0.75rem",
+                        lineHeight: 1.2,
+                        marginBottom: "0.5rem",
                       }}
                     >
                       {item.title}
@@ -908,9 +506,13 @@ export default async function HomePage() {
                     <p
                       style={{
                         color: "var(--text-secondary)",
-                        fontSize: "0.9rem",
-                        lineHeight: 1.6,
-                        marginBottom: "1.5rem",
+                        fontSize: "0.85rem",
+                        lineHeight: 1.5,
+                        marginBottom: "1rem",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
                       }}
                     >
                       {item.excerpt}
@@ -918,7 +520,7 @@ export default async function HomePage() {
                     <span
                       style={{
                         color: "var(--crimson-base)",
-                        fontSize: "0.9rem",
+                        fontSize: "0.82rem",
                         fontFamily: "var(--font-display)",
                         letterSpacing: "0.1em",
                         marginTop: "auto",

@@ -1,21 +1,21 @@
 import React from 'react';
 import MusicLoader from '@/components/ui/MusicLoader';
 
-export default function NewsDetailLoading() {
+export default function SingleNewsLoading() {
   return (
     <div
       style={{
+        backgroundColor: '#050506',
+        minHeight: '80vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: '75vh',
-        backgroundColor: '#050506',
-        width: '100%',
+        padding: '4rem 1rem',
       }}
     >
       <MusicLoader
         size="fullscreen"
-        text="PRINTING ARTICLE & PRESS ARCHIVES..."
+        text="LOADING ARTICLE & FREQUENCIES..."
       />
     </div>
   );

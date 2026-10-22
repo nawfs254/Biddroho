@@ -47,6 +47,40 @@ export default async function SingleNewsPage({ params }: PageProps) {
   const allNews = await getNews();
   const relatedPosts = allNews.filter((p) => p.slug !== slug).slice(0, 2);
 
+  // Safely extract paragraphs whether stored as string[], multi-line string, or single string
+  const rawContent = (post as any).content;
+  let paragraphs: string[] = [];
+  if (Array.isArray(rawContent)) {
+    paragraphs = rawContent.map((p) => String(p).trim()).filter(Boolean);
+  } else if (typeof rawContent === 'string' && rawContent.trim()) {
+    paragraphs = rawContent
+      .split(/\r?\n\s*\r?\n/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+    // If double-newline split produced 1 block with single newlines, split by line
+    if (paragraphs.length === 1 && paragraphs[0].includes('\n')) {
+      paragraphs = paragraphs[0]
+        .split(/\r?\n/)
+        .map((p) => p.trim())
+        .filter(Boolean);
+    }
+  }
+
+  const finalParagraphs: string[] =
+    paragraphs.length > 0
+      ? paragraphs
+      : post.excerpt
+      ? [post.excerpt]
+      : [];
+
+  // Safely handle tags
+  const rawTags = (post as any).tags;
+  const postTags: string[] = Array.isArray(rawTags)
+    ? rawTags.map((t) => String(t).trim()).filter(Boolean)
+    : typeof rawTags === 'string' && rawTags.trim()
+    ? rawTags.split(',').map((t) => t.trim()).filter(Boolean)
+    : [];
+
   return (
     <div style={{ backgroundColor: '#050506', minHeight: '100vh', paddingBottom: '6rem' }}>
       {/* Breadcrumb */}
@@ -84,13 +118,13 @@ export default async function SingleNewsPage({ params }: PageProps) {
                 letterSpacing: '0.12em'
               }}
             >
-              {post.category.toUpperCase()}
+              {(post.category || 'News').toUpperCase()}
             </span>
             <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              {post.date} • {post.readTime}
+              {post.date} • {post.readTime || '3 min read'}
             </span>
             <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              By {post.author}
+              By {post.author || 'BIDDROHO'}
             </span>
           </div>
 
@@ -108,54 +142,62 @@ export default async function SingleNewsPage({ params }: PageProps) {
           </h1>
 
           {/* Excerpt Lead */}
-          <p
-            style={{
-              fontSize: '1.25rem',
-              color: '#d4d4d8',
-              lineHeight: 1.7,
-              marginBottom: '2.5rem',
-              fontStyle: 'italic',
-              borderLeft: '3px solid var(--crimson-base)',
-              paddingLeft: '1.25rem'
-            }}
-          >
-            {post.excerpt}
-          </p>
+          {post.excerpt && (
+            <p
+              style={{
+                fontSize: '1.25rem',
+                color: '#d4d4d8',
+                lineHeight: 1.7,
+                marginBottom: '2.5rem',
+                fontStyle: 'italic',
+                borderLeft: '3px solid var(--crimson-base)',
+                paddingLeft: '1.25rem'
+              }}
+            >
+              {post.excerpt}
+            </p>
+          )}
 
           {/* Hero Cover Image */}
-          <div
-            style={{
-              position: 'relative',
-              aspectRatio: '16/9',
-              width: '100%',
-              marginBottom: '3.5rem',
-              border: '1px solid var(--border-subtle)',
-              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8)'
-            }}
-          >
-            <Image
-              src={post.coverImage}
-              alt={post.title}
-              fill
-              priority
-              style={{ objectFit: 'cover' }}
-            />
-          </div>
+          {post.coverImage && (
+            <div
+              style={{
+                position: 'relative',
+                aspectRatio: '16/9',
+                maxHeight: '400px',
+                width: '100%',
+                marginBottom: '3rem',
+                border: '1px solid var(--border-subtle)',
+                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8)',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                backgroundColor: '#070709',
+              }}
+            >
+              <Image
+                src={post.coverImage}
+                alt={post.title}
+                fill
+                priority
+                style={{ objectFit: 'cover', objectPosition: 'center top' }}
+              />
+            </div>
+          )}
 
           {/* Main Body Paragraphs */}
           <div style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', lineHeight: 1.9, display: 'flex', flexDirection: 'column', gap: '1.75rem', marginBottom: '4rem' }}>
-            {post.content.map((paragraph, index) => (
+            {finalParagraphs.map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
           </div>
 
           {/* Tags */}
-          {post.tags && (
+          {postTags.length > 0 && (
             <div style={{ borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', padding: '1.5rem 0', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
               <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <Tag size={15} /> TAGS:
               </span>
-              {post.tags.map((tag) => (
+              {postTags.map((tag) => (
                 <span
                   key={tag}
                   style={{

@@ -7,13 +7,34 @@ import type {
   MediaItem,
 } from '@/data/mockData';
 
+import {
+  RELEASES_DATA,
+  BAND_MEMBERS,
+} from '@/data/mockData';
+
+export type {
+  Release,
+  EventItem,
+  BandMember,
+  NewsPost,
+  MediaItem,
+};
+
 function cleanDoc<T>(doc: any): T {
   if (!doc) return doc;
-  const { _id, ...rest } = doc;
-  return {
-    ...rest,
-    _id: _id ? _id.toString() : undefined,
-  } as T;
+  try {
+    const plain = JSON.parse(JSON.stringify(doc));
+    if (doc._id) {
+      plain._id = doc._id.toString();
+    }
+    return plain as T;
+  } catch {
+    const { _id, ...rest } = doc;
+    return {
+      ...rest,
+      _id: _id ? _id.toString() : undefined,
+    } as T;
+  }
 }
 
 const PUBLIC_STATUS_FILTER = {
@@ -30,10 +51,13 @@ export async function getReleases(): Promise<Release[]> {
       .find(PUBLIC_STATUS_FILTER)
       .sort({ year: -1, releaseDate: -1 })
       .toArray();
-    return (releases || []).map((r) => cleanDoc<Release>(r));
+    if (releases && releases.length > 0) {
+      return releases.map((r) => cleanDoc<Release>(r));
+    }
+    return RELEASES_DATA;
   } catch (error) {
     console.error('MongoDB query for releases failed:', error);
-    return [];
+    return RELEASES_DATA;
   }
 }
 
@@ -128,10 +152,13 @@ export async function getMembers(): Promise<BandMember[]> {
       .find({ active: { $ne: false } })
       .sort({ displayOrder: 1 })
       .toArray();
-    return (members || []).map((m) => cleanDoc<BandMember>(m));
+    if (members && members.length > 0) {
+      return members.map((m) => cleanDoc<BandMember>(m));
+    }
+    return BAND_MEMBERS;
   } catch (error) {
     console.error('MongoDB query for members failed:', error);
-    return [];
+    return BAND_MEMBERS;
   }
 }
 

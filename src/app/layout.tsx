@@ -82,6 +82,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head />
       <body style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         {isConnected ? (
           <AppShell>{children}</AppShell>

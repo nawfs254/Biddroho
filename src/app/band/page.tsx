@@ -11,6 +11,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { getMembers } from "@/lib/dataService";
+import BandRosterClient from "@/components/BandRosterClient";
 
 export const revalidate = 60;
 
@@ -52,8 +53,8 @@ export default async function BandPage() {
           <h1 className="section-title">THE ARCHITECTS OF REBELLION</h1>
           <p className="section-description">
             Founded in Dhaka in 2011, BIDDROHO emerged with a solitary creed: to
-            forge uncompromising heavy rock that balances technical mastery with
-            raw street defiance.
+            forge uncompromising Bangladeshi rock that balances technical
+            mastery with raw street defiance.
           </p>
         </div>
       </section>
@@ -252,206 +253,8 @@ export default async function BandPage() {
             </p>
           </div>
 
-          {/* Members Detailed Cards */}
-          {members.length > 0 ? (
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "4rem" }}
-            >
-              {members.map((member, index) => {
-                const isEven = index % 2 === 0;
-                return (
-                  <div
-                    key={member.id}
-                    className="dark-card"
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns:
-                        "repeat(auto-fit, minmax(320px, 1fr))",
-                      gap: "3rem",
-                      padding: "clamp(2rem, 4vw, 3.5rem)",
-                      border: "1px solid var(--border-subtle)",
-                      alignItems: "center",
-                    }}
-                  >
-                    {/* Portrait Column */}
-                    <div
-                      style={{
-                        position: "relative",
-                        aspectRatio: "3/4",
-                        maxWidth: "420px",
-                        width: "100%",
-                        margin: "0 auto",
-                        order: isEven ? 1 : 2,
-                        border: "1px solid var(--border-subtle)",
-                        boxShadow: "0 20px 45px rgba(0, 0, 0, 0.8)",
-                      }}
-                    >
-                      <Image
-                        src={member.image}
-                        alt={member.name}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 40vw"
-                        style={{ objectFit: "cover" }}
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          background:
-                            "linear-gradient(180deg, transparent 70%, rgba(5,5,6,0.9) 100%)",
-                        }}
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          bottom: "1rem",
-                          left: "1rem",
-                          background: "rgba(5, 5, 6, 0.85)",
-                          border: "1px solid var(--border-subtle)",
-                          padding: "0.25rem 0.75rem",
-                          fontFamily: "var(--font-display)",
-                          fontSize: "0.85rem",
-                          color: "var(--crimson-base)",
-                          letterSpacing: "0.1em",
-                        }}
-                      >
-                        MEMBER SINCE {member.joinedYear}
-                      </div>
-                    </div>
-
-                    {/* Biography & Specs Column */}
-                    <div style={{ order: isEven ? 2 : 1 }}>
-                      <div
-                        style={{
-                          color: "var(--crimson-base)",
-                          fontFamily: "var(--font-display)",
-                          fontSize: "1rem",
-                          letterSpacing: "0.15em",
-                          marginBottom: "0.5rem",
-                        }}
-                      >
-                        // {member.instrument.toUpperCase()}
-                      </div>
-
-                      <h3
-                        className="font-display"
-                        style={{
-                          fontSize: "clamp(2.3rem, 4.5vw, 3.8rem)",
-                          color: "#fff",
-                          lineHeight: 1,
-                          marginBottom: "0.5rem",
-                        }}
-                      >
-                        {member.name}
-                      </h3>
-
-                      <div
-                        style={{
-                          color: "var(--text-muted)",
-                          fontSize: "0.95rem",
-                          fontWeight: 600,
-                          marginBottom: "1.5rem",
-                        }}
-                      >
-                        {member.role}
-                      </div>
-
-                      <p
-                        style={{
-                          color: "var(--text-secondary)",
-                          fontSize: "1.05rem",
-                          lineHeight: 1.8,
-                          marginBottom: "2rem",
-                        }}
-                      >
-                        {member.bio}
-                      </p>
-
-                      {/* Member Quote */}
-                      {member.quote && (
-                        <div
-                          style={{
-                            backgroundColor: "rgba(229, 9, 20, 0.05)",
-                            borderLeft: "3px solid var(--crimson-base)",
-                            padding: "1rem 1.25rem",
-                            marginBottom: "2rem",
-                          }}
-                        >
-                          <p
-                            style={{
-                              color: "#fff",
-                              fontStyle: "italic",
-                              fontSize: "0.95rem",
-                            }}
-                          >
-                            &ldquo;{member.quote}&rdquo;
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Gear / Weapons */}
-                      {member.gear && member.gear.length > 0 && (
-                        <div>
-                          <div
-                            style={{
-                              fontSize: "0.8rem",
-                              color: "var(--text-muted)",
-                              letterSpacing: "0.15em",
-                              fontFamily: "var(--font-display)",
-                              marginBottom: "0.75rem",
-                            }}
-                          >
-                            RIG & EQUIPMENT SPECIFICATIONS
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              flexWrap: "wrap",
-                              gap: "0.5rem",
-                            }}
-                          >
-                            {member.gear.map((gearItem, gIdx) => (
-                              <span
-                                key={gIdx}
-                                style={{
-                                  backgroundColor: "#0a0a0e",
-                                  border: "1px solid var(--border-subtle)",
-                                  color: "var(--text-secondary)",
-                                  padding: "0.35rem 0.75rem",
-                                  fontSize: "0.8rem",
-                                }}
-                              >
-                                {gearItem}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "4rem 1.5rem",
-                border: "1px dashed var(--border-subtle)",
-                backgroundColor: "rgba(255, 255, 255, 0.01)",
-              }}
-            >
-              <p
-                style={{
-                  color: "var(--text-muted)",
-                  fontSize: "1rem",
-                  margin: 0,
-                }}
-              >
-                No data available
-              </p>
-            </div>
-          )}
+          {/* Interactive Members Roster with Click-to-Modal Expansion */}
+          <BandRosterClient members={members} />
         </div>
       </section>
 

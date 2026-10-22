@@ -33,11 +33,6 @@ export default function AudioPlayerBar() {
     duration: '04:15',
   };
 
-  // If no release in database, do not render audio player
-  if (!currentRelease) {
-    return null;
-  }
-
   // Simulated playback timer for ambient visualizer
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -48,6 +43,11 @@ export default function AudioPlayerBar() {
     }
     return () => clearInterval(interval);
   }, [isPlaying]);
+
+  // If no release in database, do not render audio player
+  if (!currentRelease) {
+    return null;
+  }
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);

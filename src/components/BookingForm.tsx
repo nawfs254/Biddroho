@@ -42,6 +42,8 @@ export default function BookingForm() {
   const [errors, setErrors] = useState<Partial<Record<keyof BookingFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState('');
 
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof BookingFormData, string>> = {};
@@ -75,10 +77,15 @@ export default function BookingForm() {
     if (errors[name as keyof BookingFormData]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
+    if (serverError) {
+      setServerError(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setServerError(null);
+
     if (!validate()) {
       const firstError = document.querySelector('.form-error-marker');
       if (firstError) {
@@ -92,21 +99,23 @@ export default function BookingForm() {
       const res = await fetch('/api/book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          website: honeypot, // Spam honeypot detection
+        }),
       });
+
+      const data = await res.json();
 
       if (res.ok) {
         setIsSuccess(true);
         window.scrollTo({ top: 300, behavior: 'smooth' });
       } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to submit booking inquiry.');
+        setServerError(data.error || 'Failed to submit booking inquiry. Please try again.');
       }
     } catch (err) {
       console.error('Submission failed:', err);
-      // Fallback display success for client reassurance
-      setIsSuccess(true);
-      window.scrollTo({ top: 300, behavior: 'smooth' });
+      setServerError('Network error while transmitting booking inquiry. Please check your connection and retry.');
     } finally {
       setIsSubmitting(false);
     }
@@ -456,14 +465,64 @@ export default function BookingForm() {
           backgroundColor: 'rgba(255, 255, 255, 0.02)',
           border: '1px solid var(--border-subtle)',
           padding: '1.25rem',
-          marginBottom: '2.5rem'
+          marginBottom: '2.5rem',
         }}
       >
         <ShieldCheck size={28} color="var(--crimson-base)" style={{ flexShrink: 0 }} />
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6 }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
           BIDDROHO operates with professional technical requirements (standard PA, in-ear monitors, front-of-house sound engineers). Our booking manager will supply our official Technical Rider & Hospitality specs upon inquiry verification.
         </p>
       </div>
+
+      {/* Hidden Honeypot Anti-Spam Field */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          opacity: 0,
+          height: 0,
+          width: 0,
+          overflow: 'hidden',
+          pointerEvents: 'none',
+        }}
+        aria-hidden="true"
+      >
+        <label htmlFor="hp_website">Leave empty</label>
+        <input
+          id="hp_website"
+          type="text"
+          name="website"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+
+      {/* Server Rate-Limit or Validation Alert Banner */}
+      {serverError && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.85rem',
+            backgroundColor: 'rgba(229, 9, 20, 0.12)',
+            border: '1px solid var(--crimson-base)',
+            borderRadius: '4px',
+            padding: '1rem 1.25rem',
+            marginBottom: '2rem',
+            boxShadow: '0 0 25px rgba(229, 9, 20, 0.25)',
+          }}
+        >
+          <AlertCircle size={24} color="#ff333a" style={{ flexShrink: 0 }} />
+          <div style={{ color: '#fff', fontSize: '0.92rem', lineHeight: 1.5 }}>
+            <span style={{ fontWeight: 700, color: 'var(--crimson-base)', marginRight: '0.4rem' }}>
+              SUBMISSION NOTICE:
+            </span>
+            {serverError}
+          </div>
+        </div>
+      )}
 
       {/* Submit Button */}
       <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
